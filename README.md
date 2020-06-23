@@ -42,7 +42,7 @@ where ....
 ---
 
 ## Example video:
-[![Examples](https://github.com/tobybreckon/DoG-saliency/blob/master/images/slic-ex.png)](https://youtu.be/NEED-TO-CREATE)
+[![Examples](https://img.youtube.com/vi/3oeuWO7SlvQ/0.jpg)](https://www.youtube.com/watch?v=3oeuWO7SlvQ)
 Video Example - click image above to play.
 
 ---
