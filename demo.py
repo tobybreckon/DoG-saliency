@@ -14,6 +14,10 @@ import math
 
 ##########################################################################
 
+import saliencyDoG
+
+##########################################################################
+
 keep_processing = True
 
 # parse command line arguments for camera ID or video file
@@ -106,6 +110,10 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
         # ***
         # *** do any processing here ****
         # ***
+
+        n = 5
+
+        frame = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
 
         # display image
 
