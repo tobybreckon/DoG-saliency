@@ -3,7 +3,7 @@
 # Example : DoG saliency demo - [Katramados / Breckon 2011]
 
 # This implementation:
-# Copyright (c) 2020 XXXXXXXXXXXXXXX, Toby Breckon, Durham University, UK
+# Copyright (c) 2020 Ryan Lail, Toby Breckon, Durham University, UK
 
 ##########################################################################
 

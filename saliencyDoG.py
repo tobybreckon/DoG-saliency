@@ -3,7 +3,7 @@
 # DoG saliency [Katramados / Breckon 2011] - reference implementation -
 
 # This implementation:
-# Copyright (c) 2020 XXXXXXXXXXXXXXX, Durham University, UK
+# Copyright (c) 2020 Ryan Lail, Durham University, UK
 
 ##########################################################################
 
