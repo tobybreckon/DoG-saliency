@@ -114,6 +114,7 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
         n = 5
 
         frame = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
+        frame = saliencyDoG.top_down_gaussian_pyramid(frame, n)
 
         # display image
 

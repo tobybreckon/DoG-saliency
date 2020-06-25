@@ -20,18 +20,30 @@ def bottom_up_gaussian_pyramid(src, n):
 
     # Produce Un - step 1 of algortithm defined in [Katramados / Breckon 2011]
 
-    height, width, channels = src.shape
+    # height, width, channels = src.shape
 
     # un = cv2.pyrDown(src, dstsize=(new_width, new_height))
 
-    for _ in range(n):
-        src = cv2.pyrDown(src)
-
     un = src
+
+    for _ in range(n):
+        un = cv2.pyrDown(un)
 
     return un
 
 ##########################################################################
+
+
+def top_down_gaussian_pyramid(src, n):
+
+    # Produce Dn - step 2 of algorithm defined in [Katramados / Breckon 2011]
+
+    dn = src
+
+    for _ in range(n, 0, -1):
+        dn = cv2.pyrUp(dn)
+
+    return dn
 
 # if __name__ == '__main__':
 
