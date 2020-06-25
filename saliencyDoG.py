@@ -50,6 +50,11 @@ def saliency_map(u1, d1):
 
     # Produce S - step 3 of algorithm defined in [Katramados / Breckon 2011]
 
+    # Calculate Minimum Ratio (MiR) Matrix
+    matrix_ratio = cv2.divide(u1, d1)
+    matrix_ratio_inv = cv2.divide(d1, u1)
+    # Caluclate pixelwise min
+    mir = cv2.min(matrix_ratio, matrix_ratio_inv)
 
 
 
