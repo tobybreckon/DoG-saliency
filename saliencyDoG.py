@@ -46,9 +46,11 @@ def top_down_gaussian_pyramid(src, pyramid_height):
 ##########################################################################
 
 
-#def saliency_map(un, d1):
+def saliency_map(u1, d1):
 
     # Produce S - step 3 of algorithm defined in [Katramados / Breckon 2011]
+
+
 
 
 
