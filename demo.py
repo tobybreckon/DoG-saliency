@@ -113,16 +113,24 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
         # *** do any processing here ****
         # ***
 
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
+        #if (gr)
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
 
-        n = 5
-        u1 = copy.deepcopy(frame)
+        frame_array = cv2.split(frame)
 
-        un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
-        d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
-        s = saliencyDoG.saliency_map(u1, d1)
+        for channel in range(3):
 
-        frame = s
+            frame = frame_array[channel].astype(np.float32)
+            n = 5
+            u1 = copy.deepcopy(frame)
+
+            un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
+            d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
+            s = saliencyDoG.saliency_map(u1, d1)
+
+            frame_array[channel] = s
+
+        frame = cv2.merge(frame_array)
 
         # display image
 

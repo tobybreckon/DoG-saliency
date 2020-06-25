@@ -59,6 +59,8 @@ def saliency_map(u1, d1):
 
     # Derive salience by subtracting from scalar 1
     s = cv2.subtract(1.0, mir)
+    print(s)
+    #cv2.normalize(s, s, 0, 255)
 
     return s
 
