@@ -11,10 +11,6 @@ import cv2
 
 ##########################################################################
 
-# import saliencyDOG
-
-##########################################################################
-
 
 def bottom_up_gaussian_pyramid(src, pyramid_height):
 
@@ -60,12 +56,4 @@ def saliency_map(u1, d1):
     # Derive salience by subtracting from scalar 1
     s = cv2.subtract(1.0, mir)
 
-    return s_new
-
-
-
-# if __name__ == '__main__':
-
-##########################################################################
-
-#    bottom_up_gaussian_pyramid(src)
+    return s
