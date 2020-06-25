@@ -11,9 +11,10 @@ import cv2
 
 ##########################################################################
 
-#import saliencyDOG
+# import saliencyDOG
 
 ##########################################################################
+
 
 def bottom_up_gaussian_pyramid(src, n):
 
@@ -21,12 +22,9 @@ def bottom_up_gaussian_pyramid(src, n):
 
     height, width, channels = src.shape
 
-    # n = number of levels in gaussian pyramid
-   # new_width = int(width/(2)**(n-1))
-   # new_height = int(height/(2)**(n-1))
-   # un = cv2.pyrDown(src, dstsize=(new_width, new_height))
+    # un = cv2.pyrDown(src, dstsize=(new_width, new_height))
 
-    for _ in range (n):
+    for _ in range(n):
         src = cv2.pyrDown(src)
 
     un = src
@@ -35,7 +33,7 @@ def bottom_up_gaussian_pyramid(src, n):
 
 ##########################################################################
 
-#if __name__ == '__main__':
+# if __name__ == '__main__':
 
 ##########################################################################
 
