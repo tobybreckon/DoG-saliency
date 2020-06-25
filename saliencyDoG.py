@@ -28,9 +28,10 @@ def bottom_up_gaussian_pyramid(src, n):
 
     for _ in range (n):
         src = cv2.pyrDown(src)
-    return src
 
+    un = src
 
+    return un
 
 ##########################################################################
 
