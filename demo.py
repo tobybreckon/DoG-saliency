@@ -46,6 +46,11 @@ parser.add_argument(
     action='store_true',
     help="run in full screen mode")
 parser.add_argument(
+    "-g",
+    "--grayscale",
+    action='store_true',
+    help="convert color images to grayscale")
+parser.add_argument(
     'video_file',
     metavar='video_file',
     type=str,
@@ -113,24 +118,34 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
         # *** do any processing here ****
         # ***
 
-        #if (gr)
-        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
+        n = 5
 
-        frame_array = cv2.split(frame)
+        if (args.grayscale):
 
-        for channel in range(3):
-
-            frame = frame_array[channel].astype(np.float32)
-            n = 5
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
             u1 = copy.deepcopy(frame)
 
             un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
             d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
             s = saliencyDoG.saliency_map(u1, d1)
 
-            frame_array[channel] = s
+            frame = s
 
-        frame = cv2.merge(frame_array)
+        else:
+            frame_array = cv2.split(frame)
+
+            for channel in range(3):
+
+                frame = frame_array[channel].astype(np.float32)
+                u1 = copy.deepcopy(frame)
+
+                un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
+                d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
+                s = saliencyDoG.saliency_map(u1, d1)
+
+                frame_array[channel] = s
+
+            frame = cv2.merge(frame_array)
 
         # display image
 
