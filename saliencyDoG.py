@@ -20,10 +20,10 @@ def bottom_up_gaussian_pyramid(src, pyramid_height):
 
     # Produce Un - step 1 of algortithm defined in [Katramados / Breckon 2011]
 
-    un = src
+    un = cv2.add(src, 2**pyramid_height)
 
     for _ in range(pyramid_height):
-        height, width, channels = un.shape
+        height, width = un.shape
         un = cv2.pyrDown(un, (width/2, height/2))
 
     return un
@@ -38,7 +38,7 @@ def top_down_gaussian_pyramid(src, pyramid_height):
     dn = src
 
     for _ in range(pyramid_height, 0, -1):
-        height, width, channels = dn.shape
+        height, width = dn.shape
         dn = cv2.pyrUp(dn, (width*2, height*2))
 
     return dn
@@ -53,10 +53,14 @@ def saliency_map(u1, d1):
     # Calculate Minimum Ratio (MiR) Matrix
     matrix_ratio = cv2.divide(u1, d1)
     matrix_ratio_inv = cv2.divide(d1, u1)
+
     # Caluclate pixelwise min
     mir = cv2.min(matrix_ratio, matrix_ratio_inv)
 
+    # Derive salience by subtracting from scalar 1
+    s = cv2.subtract(1.0, mir)
 
+    return s
 
 
 
