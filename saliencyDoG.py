@@ -16,34 +16,42 @@ import cv2
 ##########################################################################
 
 
-def bottom_up_gaussian_pyramid(src, n):
+def bottom_up_gaussian_pyramid(src, pyramid_height):
 
     # Produce Un - step 1 of algortithm defined in [Katramados / Breckon 2011]
 
-    # height, width, channels = src.shape
-
-    # un = cv2.pyrDown(src, dstsize=(new_width, new_height))
-
     un = src
 
-    for _ in range(n):
-        un = cv2.pyrDown(un)
+    for _ in range(pyramid_height):
+        height, width, channels = un.shape
+        un = cv2.pyrDown(un, (width/2, height/2))
 
     return un
 
 ##########################################################################
 
 
-def top_down_gaussian_pyramid(src, n):
+def top_down_gaussian_pyramid(src, pyramid_height):
 
-    # Produce Dn - step 2 of algorithm defined in [Katramados / Breckon 2011]
+    # Produce D1 - step 2 of algorithm defined in [Katramados / Breckon 2011]
 
     dn = src
 
-    for _ in range(n, 0, -1):
-        dn = cv2.pyrUp(dn)
+    for _ in range(pyramid_height, 0, -1):
+        height, width, channels = dn.shape
+        dn = cv2.pyrUp(dn, (width*2, height*2))
 
     return dn
+
+##########################################################################
+
+
+#def saliency_map(un, d1):
+
+    # Produce S - step 3 of algorithm defined in [Katramados / Breckon 2011]
+
+
+
 
 # if __name__ == '__main__':
 
