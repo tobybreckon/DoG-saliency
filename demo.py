@@ -11,7 +11,6 @@ import cv2
 import argparse
 import sys
 import math
-import copy
 import numpy as np
 
 ##########################################################################
@@ -123,7 +122,7 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
         if (args.grayscale):
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
-            u1 = copy.deepcopy(frame)
+            u1 = frame
 
             un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
             d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
@@ -137,7 +136,7 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
             for channel in range(3):
 
                 frame = frame_array[channel].astype(np.float32)
-                u1 = copy.deepcopy(frame)
+                u1 = frame
 
                 un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
                 d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
