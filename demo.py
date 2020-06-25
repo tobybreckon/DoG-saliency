@@ -115,7 +115,10 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
 
         un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
         d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
-        frame = d1
+        s = saliencyDoG.saliency_map(un, d1)
+
+        frame = s
+
         # display image
 
         cv2.imshow(window_name, frame)
