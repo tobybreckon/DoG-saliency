@@ -82,3 +82,5 @@ def divog_saliency(src, pyramid_height):
     s = saliency_map(u1, d1)
 
     return s
+
+##########################################################################

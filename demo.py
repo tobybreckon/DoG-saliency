@@ -21,6 +21,8 @@ import saliencyDoG
 
 def process_image(frame):
 
+    # Convert each frame to a Saliency Map
+
     # number of levels in Gaussian Pyramid
     n = 5
 
@@ -194,4 +196,4 @@ if __name__ == "__main__":
     else:
         print("No video file specified or camera connected.")
 
-    ##########################################################################
+##########################################################################
