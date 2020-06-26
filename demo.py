@@ -42,9 +42,9 @@ def process_image(frame):
         # Generate Saliency Map for each channel
         for channel in range(3):
 
-            s = saliencyDoG.divog_saliency(frame_array[channel], n)
+            s_map_1_ch = saliencyDoG.divog_saliency(frame_array[channel], n)
 
-            frame_array[channel] = s
+            frame_array[channel] = s_map_1_ch
 
         # Merge back into one image
         frame = cv2.merge(frame_array)
@@ -111,8 +111,8 @@ if __name__ == "__main__":
     except BaseException:
         # if not then just use OpenCV default
 
-        print("INFO: camera_stream class not found - camera input may be\
-                buffered")
+        print("INFO: camera_stream class not found - camera input may be "
+              "buffered")
         cap = cv2.VideoCapture()
 
     # define display window name
