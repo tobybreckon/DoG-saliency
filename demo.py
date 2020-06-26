@@ -19,7 +19,43 @@ import saliencyDoG
 
 ##########################################################################
 
+def process_image(frame):
+
+    n = 5
+
+    if (args.grayscale):
+
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
+        u1 = frame
+
+        un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
+        d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
+        s = saliencyDoG.saliency_map(u1, d1)
+
+        frame = s
+
+    else:
+        frame_array = cv2.split(frame)
+
+        for channel in range(3):
+
+            frame = frame_array[channel].astype(np.float32)
+            u1 = frame
+
+            un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
+            d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
+            s = saliencyDoG.saliency_map(u1, d1)
+
+            frame_array[channel] = s
+
+        frame = cv2.merge(frame_array)
+
+    return frame
+
+##########################################################################
+
 keep_processing = True
+toggle_saliency = True
 
 # parse command line arguments for camera ID or video file
 
@@ -117,34 +153,8 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
         # *** do any processing here ****
         # ***
 
-        n = 5
-
-        if (args.grayscale):
-
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
-            u1 = frame
-
-            un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
-            d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
-            s = saliencyDoG.saliency_map(u1, d1)
-
-            frame = s
-
-        else:
-            frame_array = cv2.split(frame)
-
-            for channel in range(3):
-
-                frame = frame_array[channel].astype(np.float32)
-                u1 = frame
-
-                un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
-                d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
-                s = saliencyDoG.saliency_map(u1, d1)
-
-                frame_array[channel] = s
-
-            frame = cv2.merge(frame_array)
+        if toggle_saliency:
+            frame = process_image(frame)
 
         # display image
 
@@ -173,6 +183,8 @@ if (((args.video_file) and (cap.open(str(args.video_file))))
             keep_processing = False
         elif (key == ord('f')):
             args.fullscreen = not(args.fullscreen)
+        elif (key == ord('s')):
+            toggle_saliency = not(toggle_saliency)
 
     # close all windows
 
