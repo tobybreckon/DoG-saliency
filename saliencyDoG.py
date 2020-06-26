@@ -8,6 +8,7 @@
 ##########################################################################
 
 import cv2
+import numpy as np
 
 ##########################################################################
 
@@ -67,6 +68,9 @@ def saliency_map(u1, d1):
 def divog_saliency(src, pyramid_height):
 
     # Complete implementation of all 3 parts of algortihm defined in [Katramados / Breckon 2011]
+
+    # Convert pixels to 32-bit floats
+    src = src.astype(np.float32)
 
     # base of Gaussian Pyramid (source frame)
     u1 = src

@@ -11,7 +11,6 @@ import cv2
 import argparse
 import sys
 import math
-import numpy as np
 
 ##########################################################################
 
@@ -27,9 +26,10 @@ def process_image(frame):
 
     if (args.grayscale):
 
-        # Convert to grayscale, and convert pixels to float32
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
+        # Convert to grayscale
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+        # Generate Saliency Map
         frame = saliencyDoG.divog_saliency(frame, n)
 
     else:
@@ -37,13 +37,10 @@ def process_image(frame):
         # Split colour image into RBG channels
         frame_array = cv2.split(frame)
 
-        # Process Saliency Map for each channel
+        # Generate Saliency Map for each channel
         for channel in range(3):
 
-            # convert pixels to float32
-            frame = frame_array[channel].astype(np.float32)
-
-            s = saliencyDoG.divog_saliency(frame, n)
+            s = saliencyDoG.divog_saliency(frame_array[channel], n)
 
             frame_array[channel] = s
 
