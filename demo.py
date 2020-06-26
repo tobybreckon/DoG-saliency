@@ -109,7 +109,8 @@ if __name__ == "__main__":
     except BaseException:
         # if not then just use OpenCV default
 
-        print("INFO: camera_stream class not found - camera input may be buffered")
+        print("INFO: camera_stream class not found - camera input may be\
+                buffered")
         cap = cv2.VideoCapture()
 
     # define display window name
@@ -173,8 +174,8 @@ if __name__ == "__main__":
 
             key = cv2.waitKey(max(2, 40 - int(math.ceil(stop_t)))) & 0xFF
 
-            # It can also be set to detect specific key strokes by recording which
-            # key is pressed
+            # It can also be set to detect specific key strokes by recording
+            # which key is pressed
 
             # e.g. if user presses "x" then exit  / press "f" for fullscreen
             # display
