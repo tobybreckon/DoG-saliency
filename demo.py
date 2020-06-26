@@ -21,12 +21,16 @@ import saliencyDoG
 
 def process_image(frame):
 
+    # number of levels in Gaussian Pyramid
     n = 5
+
+    # base of Gaussian Pyramid
+    u1 = frame
 
     if (args.grayscale):
 
+        # Convert to grayscale, and convert pixels to float32
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
-        u1 = frame
 
         un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
         d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
@@ -35,12 +39,15 @@ def process_image(frame):
         frame = s
 
     else:
+
+        # Split colour image into RBG channels
         frame_array = cv2.split(frame)
 
+        # Process Saliency Map for each channel
         for channel in range(3):
 
+            # convert picels to float32
             frame = frame_array[channel].astype(np.float32)
-            u1 = frame
 
             un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
             d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
@@ -48,6 +55,7 @@ def process_image(frame):
 
             frame_array[channel] = s
 
+        # Merge back into one image
         frame = cv2.merge(frame_array)
 
     return frame
