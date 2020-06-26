@@ -1,0 +1,2 @@
+1. Both implementations (i.e. use every layer)?
+2. C++ source uses 2^n, but it says k^n in paper? Isn't k = 5?

@@ -15,7 +15,9 @@ import cv2
 def bottom_up_gaussian_pyramid(src, pyramid_height):
 
     # Produce Un - step 1 of algortithm defined in [Katramados / Breckon 2011]
+    # Uses a 5 X 5 Gaussian filter
 
+    # Shift image by 2^n to avoid division by zero or any number in range 0.0 - 1.0
     un = cv2.add(src, 2**pyramid_height)
 
     for _ in range(pyramid_height):
@@ -55,5 +57,22 @@ def saliency_map(u1, d1):
 
     # Derive salience by subtracting from scalar 1
     s = cv2.subtract(1.0, mir)
+
+    return s
+
+
+##########################################################################
+
+
+def divog_saliency(src, pyramid_height):
+
+    # Complete implementation of all 3 parts of algortihm defined in [Katramados / Breckon 2011]
+
+    # base of Gaussian Pyramid (source frame)
+    u1 = src
+
+    un = bottom_up_gaussian_pyramid(src, pyramid_height)
+    d1 = top_down_gaussian_pyramid(un, pyramid_height)
+    s = saliency_map(u1, d1)
 
     return s

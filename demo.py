@@ -30,14 +30,7 @@ def process_image(frame):
         # Convert to grayscale, and convert pixels to float32
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
 
-        # base of Gaussian Pyramid
-        u1 = frame
-
-        un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
-        d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
-        s = saliencyDoG.saliency_map(u1, d1)
-
-        frame = s
+        frame = saliencyDoG.divog_saliency(frame, n)
 
     else:
 
@@ -47,15 +40,10 @@ def process_image(frame):
         # Process Saliency Map for each channel
         for channel in range(3):
 
-            # convert picels to float32
+            # convert pixels to float32
             frame = frame_array[channel].astype(np.float32)
 
-            # base of Gaussian Pyramid
-            u1 = frame
-
-            un = saliencyDoG.bottom_up_gaussian_pyramid(frame, n)
-            d1 = saliencyDoG.top_down_gaussian_pyramid(un, n)
-            s = saliencyDoG.saliency_map(u1, d1)
+            s = saliencyDoG.divog_saliency(frame, n)
 
             frame_array[channel] = s
 
