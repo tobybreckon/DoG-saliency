@@ -1,4 +1,10 @@
-1. Both implementations (i.e. use every layer)?
+Questions:
+1. Both implementations (i.e. use every layer)? add as option
 2. C++ source uses 2^n, but it says k^n in paper? Isn't k = 5?. Also is it in the correct place?
 3. Why are colour examples not having colour maps in paper?
-4. Normalization!
+4. Clarification of tests mentioned in meeting earlier (with python version changes etc.)
+
+Todo:
+1. include parameter features (norm, low pass)
+2. check output with examples
+3. implement as class

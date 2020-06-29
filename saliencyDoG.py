@@ -72,11 +72,11 @@ def divog_saliency(src, pyramid_height):
     # Convert pixels to 32-bit floats
     src = src.astype(np.float32)
 
-    # Shift image by 2^n to avoid division by zero or any number in range
+    # Shift image by 5^n to avoid division by zero or any number in range
     # 0.0 - 1.0
-    src = cv2.add(src, 2**pyramid_height)
+    src = cv2.add(src, 5**pyramid_height)
 
-    # base of Gaussian Pyramid (source frame)
+    # Base of Gaussian Pyramid (source frame)
     u1 = src
 
     un = bottom_up_gaussian_pyramid(src, pyramid_height)
