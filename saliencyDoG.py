@@ -18,9 +18,7 @@ def bottom_up_gaussian_pyramid(src, pyramid_height):
     # Produce Un - step 1 of algortithm defined in [Katramados / Breckon 2011]
     # Uses a 5 X 5 Gaussian filter
 
-    # Shift image by 2^n to avoid division by zero or any number in range
-    # 0.0 - 1.0
-    un = cv2.add(src, 2**pyramid_height)
+    un = src
 
     for _ in range(pyramid_height):
         height, width = un.shape
@@ -74,6 +72,10 @@ def divog_saliency(src, pyramid_height):
     # Convert pixels to 32-bit floats
     src = src.astype(np.float32)
 
+    # Shift image by 2^n to avoid division by zero or any number in range
+    # 0.0 - 1.0
+    src = cv2.add(src, 2**pyramid_height)
+
     # base of Gaussian Pyramid (source frame)
     u1 = src
 
@@ -81,8 +83,9 @@ def divog_saliency(src, pyramid_height):
     d1 = top_down_gaussian_pyramid(un, pyramid_height)
     s = saliency_map(u1, d1)
 
-    # s = 255*s
-    # cv2.normalize(s, s, 0, 255, cv2.NORM_MINMAX);
+    # Normalize to 0 - 255 int range
+    s = cv2.normalize(s, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U);
+
     return s
 
 ##########################################################################
