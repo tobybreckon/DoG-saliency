@@ -2,7 +2,7 @@
 
 ![Python - PEP8](https://github.com/tobybreckon/DoG-saliency/workflows/Python%20-%20PEP8/badge.svg)
 
-Tested using Python 3.x.x and [OpenCV 4.x](http://www.opencv.org)
+Tested using Python 3.7.5 and [OpenCV 4.2.0](http://www.opencv.org)
 
 ![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/master/images/example.png)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
