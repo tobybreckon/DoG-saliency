@@ -1,3 +1,5 @@
 Todo:
 1. Clarification of tests mentioned in meeting earlier (with python version changes etc.) - pytest? with pre done maps
 2. check output with examples
+3. formatting
+4. readme
