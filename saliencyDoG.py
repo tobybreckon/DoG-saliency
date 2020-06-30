@@ -13,6 +13,14 @@ import numpy as np
 ##########################################################################
 
 
+class SaliencyDoG:
+    def __init__(self, pyramid_height=5, shift=5, 3_ch=False, multi_layer_map=False):
+
+        self.pyramid_height = pyramid_height
+        self.shift = shift
+        self.3_ch = 3_ch
+        self.multi_layer_map = multi_layer_map
+
 def bottom_up_gaussian_pyramid(src, pyramid_height):
 
     # Produce Un - step 1 of algortithm defined in [Katramados / Breckon 2011]
