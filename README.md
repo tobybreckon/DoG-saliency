@@ -13,7 +13,16 @@ Tested using Python 3.7.5 and [OpenCV 4.2.0](http://www.opencv.org)
 
 ## Abstract:
 
-_"....."_
+_"This paper introduces a novel method for deriving visual saliency maps in real-time without compromising the quality of
+the output. This is achieved by replacing the computationally
+expensive centre-surround filters with a simpler mathematical
+model named Division of Gaussians (DIVoG). The results are
+compared to five other approaches, demonstrating at least six
+times faster execution than the current state-of-the-art whilst
+maintaining high detection accuracy. Given the multitude of
+computer vision applications that make use of visual saliency
+algorithms such a reduction in computational complexity is
+essential for improving their real-time performance."_
 
 [[Katramados, Breckon, In Proc. International Conference on Image Processing, IEEE, 2011](https://breckon.org/toby/publications/papers/katramados11salient.pdf)]
 
@@ -76,6 +85,6 @@ For non-commercial use (i.e. academic, non-for-profit and research) the (very pe
 
 ### Acknowledgements:
 
-XXXXXXXXXXXXXXX, this reference implementation of [Katramados / Breckon, 2011], Durham University, July 2020.
+Ryan Lail, this reference implementation of [Katramados / Breckon, 2011], Durham University, July 2020.
 
 ---
