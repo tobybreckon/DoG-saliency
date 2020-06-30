@@ -1,4 +1,3 @@
 Todo:
-1. Both implementations (i.e. use every layer)? add as OPTION
-2. Clarification of tests mentioned in meeting earlier (with python version changes etc.) - pytest? with pre done maps
-3. check output with examples
+1. Clarification of tests mentioned in meeting earlier (with python version changes etc.) - pytest? with pre done maps
+2. check output with examples

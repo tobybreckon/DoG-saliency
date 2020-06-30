@@ -91,7 +91,9 @@ if __name__ == "__main__":
         cap = cv2.VideoCapture()
 
     # initialize saliency_mapper
-    saliency_mapper = SaliencyDoG(ch_3=not(args.grayscale), low_pass_filter=args.low_pass_filter, multi_layer_map=args.multi_layer_map)
+    saliency_mapper = SaliencyDoG(ch_3=not(args.grayscale),
+                                  low_pass_filter=args.low_pass_filter,
+                                  multi_layer_map=args.multi_layer_map)
 
     # define display window name
 
@@ -106,7 +108,6 @@ if __name__ == "__main__":
         # create window by name (as resizable)
 
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-
 
         while (keep_processing):
 

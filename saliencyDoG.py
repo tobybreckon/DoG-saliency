@@ -20,9 +20,11 @@ class SaliencyDoG:
     # shift - k as defined in [Katramados / Breckon 2011]
     # ch_3 - process colour image on every channel
     # low_pass_filter - toggle low pass filter
-    # multi_layer_map - the second version of the algortihm as defined in [Katramados / Breckon 2011]
+    # multi_layer_map - the second version of the algortihm as defined
+    #                   in [Katramados / Breckon 2011]
 
-    def __init__(self, pyramid_height=5, shift=5, ch_3=False, low_pass_filter=False, multi_layer_map=False):
+    def __init__(self, pyramid_height=5, shift=5, ch_3=False,
+                 low_pass_filter=False, multi_layer_map=False):
 
         self.pyramid_height = pyramid_height
         self.shift = shift
@@ -35,10 +37,10 @@ class SaliencyDoG:
             self.u_layers = [None]*self.pyramid_height
             self.d_layers = [None]*self.pyramid_height
 
-
     def bottom_up_gaussian_pyramid(self, src):
 
-        # Produce Un - step 1 of algortithm defined in [Katramados / Breckon 2011]
+        # Produce Un - step 1 of algortithm defined in [Katramados
+        #                                               / Breckon 2011]
         # Uses a 5 X 5 Gaussian filter
 
         un = src
@@ -52,10 +54,10 @@ class SaliencyDoG:
 
         return un
 
-
     def top_down_gaussian_pyramid(self, src):
 
-        # Produce D1 - step 2 of algorithm defined in [Katramados / Breckon 2011]
+        # Produce D1 - step 2 of algorithm defined in [Katramados
+        #                                              / Breckon 2011]
 
         dn = src
 
@@ -68,10 +70,10 @@ class SaliencyDoG:
 
         return dn
 
-
     def saliency_map(self, u1, d1):
 
-        # Produce S - step 3 of algorithm defined in [Katramados / Breckon 2011]
+        # Produce S - step 3 of algorithm defined in [Katramados
+        #                                             / Breckon 2011]
 
         if self.multi_layer_map:
 
@@ -96,7 +98,6 @@ class SaliencyDoG:
                 mir_n = cv2.min(matrix_ratio, matrix_ratio_inv) * mir
                 mir = mir_n
 
-
         else:
 
             # Calculate Minimum Ratio (MiR) Matrix
@@ -110,7 +111,6 @@ class SaliencyDoG:
         s = cv2.subtract(1.0, mir)
 
         return s
-
 
     def divog_saliency(self, src):
 
@@ -141,7 +141,6 @@ class SaliencyDoG:
 
         return s
 
-
     def generate_saliency(self, src):
 
         if self.ch_3:
@@ -152,11 +151,13 @@ class SaliencyDoG:
             # Generate Saliency Map for each channel
             for channel in range(3):
 
-                channel_array[channel] = self.divog_saliency(channel_array[channel])
+                channel_array[channel] = self.divog_saliency(
+                        channel_array[channel])
 
             # Merge back into one grayscale image with floor division to keep
             # int pixel values
-            return channel_array[0]//3 + channel_array[1]//3 + channel_array[2]//3
+            return (channel_array[0]//3 + channel_array[1]//3 +
+                    channel_array[2]//3)
         else:
 
             # Convert to grayscale
