@@ -14,12 +14,20 @@ import numpy as np
 
 
 class SaliencyDoG:
-    def __init__(self, pyramid_height=5, shift=5, ch_3=False):#, low_pass_filter=False, multi_layer_map=False):
+
+    # Parameters:
+    # pyramid_height - n as defined in [Katramados / Breckon 2011]
+    # shift - k as defined in [Katramados / Breckon 2011]
+    # ch_3 - process colour image on every channel
+    # low_pass_filter - toggle low pass filter
+    # multi_layer_map - the second version of the algortihm as defined in [Katramados / Breckon 2011]
+
+    def __init__(self, pyramid_height=5, shift=5, ch_3=False, low_pass_filter=False):#, multi_layer_map=False):
 
         self.pyramid_height = pyramid_height
         self.shift = shift
         self.ch_3 = ch_3
-#        self.low_pass_filter = low_pass_filter
+        self.low_pass_filter = low_pass_filter
 #        self.multi_layer_map = multi_layer_map
 
 
@@ -36,8 +44,6 @@ class SaliencyDoG:
 
         return un
 
-##########################################################################
-
 
     def top_down_gaussian_pyramid(self, src):
 
@@ -50,8 +56,6 @@ class SaliencyDoG:
             dn = cv2.pyrUp(dn, (width*2, height*2))
 
         return dn
-
-##########################################################################
 
 
     def saliency_map(self, u1, d1):
@@ -71,9 +75,6 @@ class SaliencyDoG:
         return s
 
 
-##########################################################################
-
-
     def divog_saliency(self, src):
 
         # Complete implementation of all 3 parts of algortihm defined in
@@ -82,9 +83,9 @@ class SaliencyDoG:
         # Convert pixels to 32-bit floats
         src = src.astype(np.float32)
 
-        # Shift image by 5^n to avoid division by zero or any number in range
+        # Shift image by k^n to avoid division by zero or any number in range
         # 0.0 - 1.0
-        src = cv2.add(src, 5**self.pyramid_height)
+        src = cv2.add(src, self.shift**self.pyramid_height)
 
         # Base of Gaussian Pyramid (source frame)
         u1 = src
@@ -96,9 +97,13 @@ class SaliencyDoG:
         # Normalize to 0 - 255 int range
         s = cv2.normalize(s, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
 
+        # low-pass filter as defined by original author
+        if self.low_pass_filter:
+            avg = cv2.mean(s)
+            s = cv2.substract(s, avg)
+
         return s
 
-##########################################################################
 
     def generate_saliency(self, src):
 
@@ -123,3 +128,4 @@ class SaliencyDoG:
             # Generate Saliency Map
             return self.divog_saliency(src_bw)
 
+##########################################################################
