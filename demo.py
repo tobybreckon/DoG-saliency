@@ -58,6 +58,11 @@ if __name__ == "__main__":
         action='store_true',
         help="apply a low_pass_filter to saliency map")
     parser.add_argument(
+        "-m",
+        "--multi_layer_map",
+        action='store_true',
+        help="Use every layer in the production of the saliency map")
+    parser.add_argument(
         'video_file',
         metavar='video_file',
         type=str,
@@ -86,7 +91,7 @@ if __name__ == "__main__":
         cap = cv2.VideoCapture()
 
     # initialize saliency_mapper
-    saliency_mapper = SaliencyDoG(ch_3=not(args.grayscale), low_pass_filter=args.low_pass_filter)
+    saliency_mapper = SaliencyDoG(ch_3=not(args.grayscale), low_pass_filter=args.low_pass_filter, multi_layer_map=args.multi_layer_map)
 
     # define display window name
 

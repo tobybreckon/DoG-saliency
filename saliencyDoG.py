@@ -73,12 +73,38 @@ class SaliencyDoG:
 
         # Produce S - step 3 of algorithm defined in [Katramados / Breckon 2011]
 
-        # Calculate Minimum Ratio (MiR) Matrix
-        matrix_ratio = cv2.divide(u1, d1)
-        matrix_ratio_inv = cv2.divide(d1, u1)
+        if self.multi_layer_map:
 
-        # Caluclate pixelwise min
-        mir = cv2.min(matrix_ratio, matrix_ratio_inv)
+            # Initial MiR Matrix M0
+            height, width = u1.shape
+            mir = np.ones((height, width))
+
+            for layer in range(self.pyramid_height):
+
+                un = self.u_layers[layer]
+                # corresponding d layers are in reverse order
+                dn = self.d_layers[self.pyramid_height - layer - 1]
+
+                un_scaled = cv2.resize(un, (width, height))
+                dn_scaled = cv2.resize(dn, (width, height))
+
+                # Calculate Minimum Ratio (MiR) Matrix
+                matrix_ratio = cv2.divide(un_scaled, dn_scaled)
+                matrix_ratio_inv = cv2.divide(dn_scaled, un_scaled)
+
+                # Caluclate pixelwise min
+                mir_n = cv2.min(matrix_ratio, matrix_ratio_inv) * mir
+                mir = mir_n
+
+
+        else:
+
+            # Calculate Minimum Ratio (MiR) Matrix
+            matrix_ratio = cv2.divide(u1, d1)
+            matrix_ratio_inv = cv2.divide(d1, u1)
+
+            # Caluclate pixelwise min
+            mir = cv2.min(matrix_ratio, matrix_ratio_inv)
 
         # Derive salience by subtracting from scalar 1
         s = cv2.subtract(1.0, mir)
