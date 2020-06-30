@@ -46,8 +46,9 @@ def process_image(frame):
 
             frame_array[channel] = s_map_1_ch
 
-        # Merge back into one image
-        frame = cv2.merge(frame_array)
+        # Merge back into one grayscale image with floor division to keep
+        # int pixel values
+        frame = (frame_array[0]//3 + frame_array[1]//3 + frame_array[2]//3)
 
     return frame
 
