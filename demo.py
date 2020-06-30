@@ -51,7 +51,12 @@ if __name__ == "__main__":
         "-g",
         "--grayscale",
         action='store_true',
-        help="convert color images to grayscale")
+        help="process images as grayscale")
+    parser.add_argument(
+        "-l",
+        "--low_pass_filter",
+        action='store_true',
+        help="apply a low_pass_filter to saliency map")
     parser.add_argument(
         'video_file',
         metavar='video_file',
@@ -81,10 +86,7 @@ if __name__ == "__main__":
         cap = cv2.VideoCapture()
 
     # initialize saliency_mapper
-    if args.grayscale:
-        saliency_mapper = SaliencyDoG()
-    else:
-        saliency_mapper = SaliencyDoG(ch_3=True)
+    saliency_mapper = SaliencyDoG(ch_3=not(args.grayscale), low_pass_filter=args.low_pass_filter)
 
     # define display window name
 

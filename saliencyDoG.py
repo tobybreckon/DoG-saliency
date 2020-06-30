@@ -100,7 +100,7 @@ class SaliencyDoG:
         # low-pass filter as defined by original author
         if self.low_pass_filter:
             avg = cv2.mean(s)
-            s = cv2.substract(s, avg)
+            s = cv2.subtract(s, avg)
 
         return s
 
