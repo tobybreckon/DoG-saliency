@@ -2,7 +2,6 @@ Questions:
 1. Both implementations (i.e. use every layer)? add as OPTION
 2. C++ source uses 2^n, but it says k^n in paper? Isn't k = 5?. Also is it in the correct place? - add note saying k = 2
 discussion with authours meant k = 2. OPTION
-3. Why are colour examples not having colour maps in paper? - avg not have colour map
 4. Clarification of tests mentioned in meeting earlier (with python version changes etc.) - pytest? with pre done maps
 
 Todo:

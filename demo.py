@@ -116,6 +116,12 @@ if __name__ == "__main__":
               "buffered")
         cap = cv2.VideoCapture()
 
+    # initialize saliency
+    if args.grayscale:
+        saliency_mapper = saliencyDoG.SaliencyDoG()
+    else:
+        saliency_mapper = saliencyDoG.SaliencyDoG(ch_3=True)
+
     # define display window name
 
     window_name = "Live Camera Input"  # window name
@@ -129,6 +135,7 @@ if __name__ == "__main__":
         # create window by name (as resizable)
 
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+
 
         while (keep_processing):
 
@@ -158,7 +165,7 @@ if __name__ == "__main__":
             # ***
 
             if toggle_saliency:
-                frame = process_image(frame)
+                frame = saliency_mapper.generate_saliency(frame)
 
             # display image
 
