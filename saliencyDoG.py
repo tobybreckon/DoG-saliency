@@ -22,13 +22,18 @@ class SaliencyDoG:
     # low_pass_filter - toggle low pass filter
     # multi_layer_map - the second version of the algortihm as defined in [Katramados / Breckon 2011]
 
-    def __init__(self, pyramid_height=5, shift=5, ch_3=False, low_pass_filter=False):#, multi_layer_map=False):
+    def __init__(self, pyramid_height=5, shift=5, ch_3=False, low_pass_filter=False, multi_layer_map=False):
 
         self.pyramid_height = pyramid_height
         self.shift = shift
         self.ch_3 = ch_3
         self.low_pass_filter = low_pass_filter
-#        self.multi_layer_map = multi_layer_map
+        self.multi_layer_map = multi_layer_map
+
+        # define storage for pyramid layers only if needed
+        if self.multi_layer_map:
+            self.u_layers = [None]*self.pyramid_height
+            self.d_layers = [None]*self.pyramid_height
 
 
     def bottom_up_gaussian_pyramid(self, src):
@@ -38,9 +43,12 @@ class SaliencyDoG:
 
         un = src
 
-        for _ in range(self.pyramid_height):
+        for layer in range(self.pyramid_height):
             height, width = un.shape
             un = cv2.pyrDown(un, (width/2, height/2))
+
+            if self.multi_layer_map:
+                self.u_layers[layer] = un
 
         return un
 
@@ -51,9 +59,12 @@ class SaliencyDoG:
 
         dn = src
 
-        for _ in range(self.pyramid_height, 0, -1):
+        for layer in range(self.pyramid_height-1, -1, -1):
             height, width = dn.shape
             dn = cv2.pyrUp(dn, (width*2, height*2))
+
+            if self.multi_layer_map:
+                self.d_layers[layer] = dn
 
         return dn
 
