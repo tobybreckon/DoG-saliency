@@ -84,7 +84,7 @@ def divog_saliency(src, pyramid_height):
     s = saliency_map(u1, d1)
 
     # Normalize to 0 - 255 int range
-    s = cv2.normalize(s, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U);
+    s = cv2.normalize(s, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
 
     return s
 
