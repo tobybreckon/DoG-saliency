@@ -14,43 +14,7 @@ import math
 
 ##########################################################################
 
-import saliencyDoG
-
-##########################################################################
-
-
-def process_image(frame):
-
-    # Convert each frame to a Saliency Map
-
-    # number of levels in Gaussian Pyramid
-    n = 5
-
-    if (args.grayscale):
-
-        # Convert to grayscale
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        # Generate Saliency Map
-        frame = saliencyDoG.divog_saliency(frame, n)
-
-    else:
-
-        # Split colour image into RBG channels
-        frame_array = cv2.split(frame)
-
-        # Generate Saliency Map for each channel
-        for channel in range(3):
-
-            s_map_1_ch = saliencyDoG.divog_saliency(frame_array[channel], n)
-
-            frame_array[channel] = s_map_1_ch
-
-        # Merge back into one grayscale image with floor division to keep
-        # int pixel values
-        frame = (frame_array[0]//3 + frame_array[1]//3 + frame_array[2]//3)
-
-    return frame
+from saliencyDoG import SaliencyDoG
 
 ##########################################################################
 
@@ -116,11 +80,11 @@ if __name__ == "__main__":
               "buffered")
         cap = cv2.VideoCapture()
 
-    # initialize saliency
+    # initialize saliency_mapper
     if args.grayscale:
-        saliency_mapper = saliencyDoG.SaliencyDoG()
+        saliency_mapper = SaliencyDoG()
     else:
-        saliency_mapper = saliencyDoG.SaliencyDoG(ch_3=True)
+        saliency_mapper = SaliencyDoG(ch_3=True)
 
     # define display window name
 
