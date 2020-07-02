@@ -45,7 +45,8 @@ To download and test the supplied code do:
 ```
 $ git clone https://github.com/tobybreckon/DoG-saliency.git
 $ cd DoG-saliency
-$ python3.7 -m pip install -r requirements.txt
+$ python3.x -m pip install -r requirements.txt
+$ pytest test.py
 $ python demo.py
 ```
 
