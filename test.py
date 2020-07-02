@@ -19,6 +19,9 @@ TRUTH_DIR = 'test/true_saliency_maps/'
 class TestClass:
 
     def test_one(self):
+
+        # default test
+
         test_img = cv2.imread(ORIGINAL_DIR + 'fig_2.png')
         test_saliency_mapper = SaliencyDoG()
         test_map = test_saliency_mapper.generate_saliency(test_img)
@@ -27,6 +30,9 @@ class TestClass:
         assert np.array_equal(test_map, test_map_truth)
 
     def test_two(self):
+
+        # 3 channel test
+
         test_img = cv2.imread(ORIGINAL_DIR + 'fig_2.png')
         test_saliency_mapper = SaliencyDoG(ch_3=True)
         test_map = test_saliency_mapper.generate_saliency(test_img)
@@ -35,6 +41,9 @@ class TestClass:
         assert np.array_equal(test_map, test_map_truth)
 
     def test_three(self):
+
+        # low pass filter test
+
         test_img = cv2.imread(ORIGINAL_DIR + 'fig_2.png')
         test_saliency_mapper = SaliencyDoG(low_pass_filter=True)
         test_map = test_saliency_mapper.generate_saliency(test_img)
@@ -43,6 +52,9 @@ class TestClass:
         assert np.array_equal(test_map, test_map_truth)
 
     def test_four(self):
+
+        # multi later map test
+
         test_img = cv2.imread(ORIGINAL_DIR + 'fig_2.png')
         test_saliency_mapper = SaliencyDoG(multi_layer_map=True)
         test_map = test_saliency_mapper.generate_saliency(test_img)
