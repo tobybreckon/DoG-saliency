@@ -11,7 +11,6 @@ import cv2
 import argparse
 import sys
 import math
-import numpy as np
 
 ##########################################################################
 
@@ -72,7 +71,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ##########################################################################
-
 
     # define video capture object
 
