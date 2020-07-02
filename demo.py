@@ -64,11 +64,6 @@ if __name__ == "__main__":
         action='store_true',
         help="Use every layer in the production of the saliency map")
     parser.add_argument(
-        "-t",
-        "--run_test",
-        action='store_true',
-        help="Run test to ensure saliency is being generated correctly")
-    parser.add_argument(
         'video_file',
         metavar='video_file',
         type=str,
@@ -77,20 +72,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ##########################################################################
-
-    # test
-
-    if args.run_test:
-
-        test_img = cv2.imread('test/samples/fig_2.png')
-        test_saliency_mapper = SaliencyDoG()
-        test_map = test_saliency_mapper.generate_saliency(test_img)
-
-        test_map_truth = cv2.imread('test/true_saliency_maps/fig_2_saliency.png')
-        test_map_truth = cv2.cvtColor(test_map_truth, cv2.COLOR_BGR2GRAY)
-        if np.array_equal(test_map, test_map_truth):
-            print("PASS")
-        sys.exit(0)
 
 
     # define video capture object
