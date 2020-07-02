@@ -4,7 +4,7 @@
 
 Tested using Python 3.7.5 and [OpenCV 4.2.0](http://www.opencv.org)
 
-![DOG-Saliency](https://raw.githubusercontent.com/tobybreckon/DoG-saliency/development/test/true_saliency_maps/fig_2_saliency.png?token=AG2USG6J36SUK5U6CXMCEQ27A4NJI)
+![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/development/test/true_saliency_maps/fig_2_saliency.png)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
