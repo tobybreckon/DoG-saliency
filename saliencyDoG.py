@@ -43,11 +43,14 @@ class SaliencyDoG:
         #                                               / Breckon 2011]
         # Uses a 5 X 5 Gaussian filter
 
-        if self.multi_layer_map:
-            self.u_layers[0] = src
-
+        # u1 = src
         un = src
 
+        if self.multi_layer_map:
+            self.u_layers[0] = un
+
+        # perform pyramid_height - 1 pyrDown, yielding pyramid_height
+        # layers
         for layer in range(1, self.pyramid_height):
             height, width = un.shape
             un = cv2.pyrDown(un, (width/2, height/2))
@@ -62,11 +65,15 @@ class SaliencyDoG:
         # Produce D1 - step 2 of algorithm defined in [Katramados
         #                                              / Breckon 2011]
 
-        if self.multi_layer_map:
-            self.d_layers[self.pyramid_height - 1] = src
-
+        # d1 = src
         dn = src
 
+        if self.multi_layer_map:
+            # place at end of array, to correspond with u_layers
+            self.d_layers[self.pyramid_height - 1] = src
+
+        # perform pyramid_height - 1 pyrUp, yielding pyramid_height
+        # layers
         for layer in range(self.pyramid_height-2, -1, -1):
             height, width = dn.shape
             dn = cv2.pyrUp(dn, (width*2, height*2))
@@ -92,8 +99,6 @@ class SaliencyDoG:
                 un = self.u_layers[layer]
                 # corresponding d layers are in reverse order
                 dn = self.d_layers[layer]
-                print(un.shape)
-                print(dn.shape)
 
                 un_scaled = cv2.resize(un, (width, height))
                 dn_scaled = cv2.resize(dn, (width, height))
