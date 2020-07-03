@@ -33,7 +33,29 @@ essential for improving their real-time performance."_
 ....
 
 
----
+This Saliency Map generator uses the Division of Gaussians approach. Simply this algorithm performs the following three steps: 
+- Bottom-up construction of Gaussian pyramid
+- Top-down construction of Gaussian pyramid based on the output of Step 1
+- Element-by element division of the input image with the output of Step 2
+
+This repository contains `saliencyDoG.py` which corresponds to the Division of Gaussians algortihm as defined in the paper. `demo.py` is simply an example of usage of the SaliencyDoG library (supported by `camera_stream.py`, providing an unbuffered video feed from a live camera input). `test.py` should be used to verify correct versions of libraries are installed, before using the library.
+
+`saliencyDoG.py` contains class `SaliencyDoG`. An object for a salience mapper can be created (with specific options), and used on various images, e.g.
+```python
+from saliencyDoG import SaliencyDoG
+import cv2
+
+img = cv2.imread('dog.png')
+saliency_mapper = SaliencyDoG(pyramid_height=5, shift=5, ch_3=False,
+                              low_pass_filter=False, multi_layer_map=False)
+img_saliency_map = saliency_mapper.generate_saliency(img)
+```
+where parameters:
+- `pyramid_height` - n as defined in [Katramados / Breckon 2011] - default = 5
+- `shift` - k as defined in [Katramados / Breckon 2011] - default = 5
+- `ch_3` - process colour image on every channel (approximetly 3x slower) - default = False
+- `low_pass_filter` - toggle low pass filter - default = False
+- `multi_layer_map` - the second version of the algortihm as defined in [Katramados / Breckon 2011] (significantly slower, with simmilar results) - default = False
 
 
 ---
