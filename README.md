@@ -67,7 +67,7 @@ $ cd DoG-saliency
 $ python3.x -m pip install -r requirements.txt
 $ pytest test.py
 ```
-Ensure that all tests are passed before proceeding. If any tests fail, ensure
+Ensure that all tests are passed before proceeding. If any tests fail, ensure you have installed the modules from `requirements.txt` and are using at least python 3.7.5 and OpenCv 4.2.0
 
 ```
 $ python demo.py [-h] [-c CAMERA_TO_USE] [-r RESCALE] [-fs] [-g] [-l] [-m] [video_file]
