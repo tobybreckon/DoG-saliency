@@ -40,7 +40,7 @@ if __name__ == "__main__":
         "-r",
         "--rescale",
         type=float,
-        help="rescale image by this factor",
+        help="rescale video by this factor",
         default=1.0)
     parser.add_argument(
         "-fs",
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         "-g",
         "--grayscale",
         action='store_true',
-        help="process images as grayscale")
+        help="process frames as grayscale")
     parser.add_argument(
         "-l",
         "--low_pass_filter",
@@ -61,7 +61,7 @@ if __name__ == "__main__":
         "-m",
         "--multi_layer_map",
         action='store_true',
-        help="Use every layer in the production of the saliency map")
+        help="use every layer in the production of the saliency map")
     parser.add_argument(
         'video_file',
         metavar='video_file',
