@@ -2,9 +2,9 @@
 
 ![Python - PEP8](https://github.com/tobybreckon/DoG-saliency/workflows/Python%20-%20PEP8/badge.svg)
 
-Tested using Python 3.x.x and [OpenCV 4.x](http://www.opencv.org)
+Tested using Python 3.7.5 and [OpenCV 4.2.0](http://www.opencv.org)
 
-![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/master/images/example.png)
+![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/development/test/true_saliency_maps/fig_2_saliency.png)|![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/development/test/samples/fig_2.png)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -13,7 +13,16 @@ Tested using Python 3.x.x and [OpenCV 4.x](http://www.opencv.org)
 
 ## Abstract:
 
-_"....."_
+_"This paper introduces a novel method for deriving visual saliency maps in real-time without compromising the quality of
+the output. This is achieved by replacing the computationally
+expensive centre-surround filters with a simpler mathematical
+model named Division of Gaussians (DIVoG). The results are
+compared to five other approaches, demonstrating at least six
+times faster execution than the current state-of-the-art whilst
+maintaining high detection accuracy. Given the multitude of
+computer vision applications that make use of visual saliency
+algorithms such a reduction in computational complexity is
+essential for improving their real-time performance."_
 
 [[Katramados, Breckon, In Proc. International Conference on Image Processing, IEEE, 2011](https://breckon.org/toby/publications/papers/katramados11salient.pdf)]
 
@@ -21,10 +30,29 @@ _"....."_
 
 ## Reference implementation:
 
-....
+This Saliency Map generator uses the Division of Gaussians approach to produce real-time saliency maps. Simply this algorithm performs the following three steps: 
+- Bottom-up construction of Gaussian pyramid
+- Top-down construction of Gaussian pyramid based on the output of Step 1
+- Element-by element division of the input image with the output of Step 2
 
+This repository contains `saliencyDoG.py` which corresponds to the Division of Gaussians algortihm as defined in the paper. `demo.py` is simply an example of usage of the SaliencyDoG library (supported by `camera_stream.py`, providing an unbuffered video feed from a live camera input), which demonstrates saliencyDoG using either live or input video, and a live result. Each frame is processed sequentially, producing the real-time saliency map. `test.py` should be used to verify correct versions of libraries are installed, before using the library.
 
----
+`saliencyDoG.py` contains class `SaliencyDoG`. An object for a salience mapper can be created (with specific options), and used on various images, e.g.
+```python
+from saliencyDoG import SaliencyDoG
+import cv2
+
+img = cv2.imread('dog.png')
+saliency_mapper = SaliencyDoG(pyramid_height=5, shift=5, ch_3=False,
+                              low_pass_filter=False, multi_layer_map=False)
+img_saliency_map = saliency_mapper.generate_saliency(img)
+```
+where parameters:
+- `pyramid_height` - n as defined in [Katramados / Breckon 2011] - default = 5
+- `shift` - k as defined in [Katramados / Breckon 2011] - default = 5
+- `ch_3` - process colour image on every channel (approximetly 3x slower) - default = False
+- `low_pass_filter` - toggle low pass filter - default = False
+- `multi_layer_map` - the second version of the algortihm as defined in [Katramados / Breckon 2011] (significantly slower, with simmilar results) - default = False
 
 
 ---
@@ -36,10 +64,28 @@ To download and test the supplied code do:
 ```
 $ git clone https://github.com/tobybreckon/DoG-saliency.git
 $ cd DoG-saliency
-$ python demo.py ....
+$ python3.x -m pip install -r requirements.txt
+$ pytest test.py
+```
+Ensure that all tests are passed before proceeding. If any tests fail, ensure you have installed the modules from `requirements.txt` and are using at least python 3.7.5 and OpenCv 4.2.0
+
+```
+$ python demo.py [-h] [-c CAMERA_TO_USE] [-r RESCALE] [-fs] [-g] [-l] [-m] [video_file]
 ```
 
-where ....
+positional arguments:
+-   `video_file`&nbsp;&nbsp;specify optional video file
+
+optional arguments:
+-   `-h`&nbsp;&nbsp;show help message and exit
+-   `-c CAMERA_TO_USE`&nbsp;&nbsp;specify camera to use (int)
+-   `-r RESCALE`&nbsp;&nbsp;rescale image by this factor (float)
+-   `-fs`&nbsp;&nbsp;run in full screen mode
+-   `-g`&nbsp;&nbsp;process frames as grayscale
+-   `-l`&nbsp;&nbsp;apply a low_pass_filter to saliency map
+-   `-m`&nbsp;&nbsp;use every layer in the production of the saliency map
+
+During run-time `x` will quit the program, `f` will toggle fullscreen, and `s` will toggle between saliency mapping and the input frames.
 
 ---
 
@@ -76,6 +122,6 @@ For non-commercial use (i.e. academic, non-for-profit and research) the (very pe
 
 ### Acknowledgements:
 
-XXXXXXXXXXXXXXX, this reference implementation of [Katramados / Breckon, 2011], Durham University, July 2020.
+Ryan Lail, this reference implementation of [Katramados / Breckon, 2011], Durham University, July 2020.
 
 ---
