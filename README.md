@@ -30,9 +30,6 @@ essential for improving their real-time performance."_
 
 ## Reference implementation:
 
-....
-
-
 This Saliency Map generator uses the Division of Gaussians approach. Simply this algorithm performs the following three steps: 
 - Bottom-up construction of Gaussian pyramid
 - Top-down construction of Gaussian pyramid based on the output of Step 1
