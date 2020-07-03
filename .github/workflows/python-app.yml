@@ -5,9 +5,9 @@ name: Python - PEP8
 
 on:
   push:
-    branches: [ master, development ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, development ]
+    branches: [ master ]
 
 jobs:
   build:
