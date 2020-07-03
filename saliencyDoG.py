@@ -49,7 +49,7 @@ class SaliencyDoG:
         if self.multi_layer_map:
             self.u_layers[0] = un
 
-        # perform pyramid_height - 1 pyrDown, yielding pyramid_height
+        # perform pyrDown pyramid_height - 1 times, yielding pyramid_height
         # layers
         for layer in range(1, self.pyramid_height):
             height, width = un.shape
@@ -72,7 +72,7 @@ class SaliencyDoG:
             # place at end of array, to correspond with u_layers
             self.d_layers[self.pyramid_height - 1] = src
 
-        # perform pyramid_height - 1 pyrUp, yielding pyramid_height
+        # perform pyrUp pyramid_height - 1 times, yielding pyramid_height
         # layers
         for layer in range(self.pyramid_height-2, -1, -1):
             height, width = dn.shape
@@ -96,10 +96,11 @@ class SaliencyDoG:
 
             for layer in range(self.pyramid_height):
 
+                # corresponding pyramid layers are in same index pos.
                 un = self.u_layers[layer]
-                # corresponding d layers are in reverse order
                 dn = self.d_layers[layer]
 
+                # scale layers to original dimenstions
                 un_scaled = cv2.resize(un, (width, height))
                 dn_scaled = cv2.resize(dn, (width, height))
 
