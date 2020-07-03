@@ -4,14 +4,15 @@
 
 ##########################################################################
 
+import os
 import cv2
 import numpy as np
 from saliencyDoG import SaliencyDoG
 
 ##########################################################################
 
-ORIGINAL_DIR = 'test/samples/'
-TRUTH_DIR = 'test/true_saliency_maps/'
+ORIGINAL_DIR = 'test'+os.sep+'samples'+os.sep
+TRUTH_DIR = 'test'+os.sep+'true_saliency_maps'+os.sep
 
 ##########################################################################
 
