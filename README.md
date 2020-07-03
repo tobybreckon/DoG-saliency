@@ -66,10 +66,22 @@ $ git clone https://github.com/tobybreckon/DoG-saliency.git
 $ cd DoG-saliency
 $ python3.x -m pip install -r requirements.txt
 $ pytest test.py
-$ python demo.py
+$ python demo.py [-h] [-c CAMERA_TO_USE] [-r RESCALE] [-fs] [-g] [-l] [-m] [video_file]
+
 ```
 
-where ....
+positional arguments:
+-   `video_file`&nbsp;&nbsp;specify optional video file
+
+optional arguments:
+-   `-h`&nbsp;&nbsp;show help message and exit
+-   `-c CAMERA_TO_USE`&nbsp;&nbsp;specify camera to use (int)
+-   `-r RESCALE`&nbsp;&nbsp;rescale image by this factor (float)
+-   `-fs`&nbsp;&nbsp;run in full screen mode
+-   `-g`&nbsp;&nbsp;process frames as grayscale
+-   `-l`&nbsp;&nbsp;apply a low_pass_filter to saliency map
+-   `-m`&nbsp;&nbsp;Use every layer in the production of the saliency map
+
 
 ---
 
