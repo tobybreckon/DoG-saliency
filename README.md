@@ -30,12 +30,12 @@ essential for improving their real-time performance."_
 
 ## Reference implementation:
 
-This Saliency Map generator uses the Division of Gaussians approach to produce real-time saliency maps. Simply this algorithm performs the following three steps:
+This Saliency Map generator uses the Division of Gaussians (DIVoG / DoG) approach to produce real-time saliency maps. Put simply this algorithm performs the following three steps (as set out in the original DIVoG research paper):
 - Bottom-up construction of Gaussian pyramid
 - Top-down construction of Gaussian pyramid based on the output of Step 1
 - Element-by element division of the input image with the output of Step 2
 
-This repository contains `saliencyDoG.py` which corresponds to the Division of Gaussians algortihm as defined in the paper. `demo.py` is simply an example of usage of the SaliencyDoG library (supported by `camera_stream.py`, providing an unbuffered video feed from a live camera input), which demonstrates saliencyDoG using either live or input video, and a live result. Each frame is processed sequentially, producing the real-time saliency map. `test.py` should be used to verify correct versions of libraries are installed, before using the library.
+This repository contains `saliencyDoG.py` which corresponds to the Division of Gaussians algortihm as defined in [Katramados / Breckon, 2011]. `demo.py` is simply an example of usage of the SaliencyDoG library (supported by `camera_stream.py`, providing an unbuffered video feed from a live camera input), which demonstrates saliencyDoG using either live or input video, and a live result. Each frame is processed sequentially, producing the real-time saliency map. `test.py` should be used to verify correct versions of libraries are installed, before using the library.
 
 `saliencyDoG.py` contains class `SaliencyDoG`. An object for a salience mapper can be created (with specific options), and used on various images, e.g.
 ```python
@@ -67,7 +67,9 @@ $ cd DoG-saliency
 $ python3.x -m pip install -r requirements.txt
 $ pytest test.py
 ```
-Ensure that all tests are passed before proceeding. If any tests fail, ensure you have installed the modules from `requirements.txt` and are using at least python 3.7.5 and OpenCv 4.2.0
+Ensure that all tests are passed before proceeding. If any tests fail, ensure you have installed the modules from `requirements.txt` and are using at least python 3.7.5 and OpenCv 4.2.0. 
+
+Subsequently run the following command to obtain real-time saliency output from a connected camera or video file specified on the command line:
 
 ```
 $ python demo.py [-h] [-c CAMERA_TO_USE] [-r RESCALE] [-fs] [-g] [-l] [-m] [video_file]
@@ -78,14 +80,14 @@ positional arguments:
 
 optional arguments:
 -   `-h`&nbsp;&nbsp;show help message and exit
--   `-c CAMERA_TO_USE`&nbsp;&nbsp;specify camera to use (int)
--   `-r RESCALE`&nbsp;&nbsp;rescale image by this factor (float)
--   `-fs`&nbsp;&nbsp;run in full screen mode
--   `-g`&nbsp;&nbsp;process frames as grayscale
--   `-l`&nbsp;&nbsp;apply a low_pass_filter to saliency map
--   `-m`&nbsp;&nbsp;use every layer in the production of the saliency map
+-   `-c CAMERA_TO_USE`&nbsp;&nbsp;specify camera to use (int) - default = 0
+-   `-r RESCALE`&nbsp;&nbsp;rescale image by this factor (float) - default = 1.0
+-   `-fs`&nbsp;&nbsp; optionally run in full screen mode
+-   `-g`&nbsp;&nbsp; optionally process frames as grayscale
+-   `-l`&nbsp;&nbsp; optionally apply a low_pass_filter to saliency map
+-   `-m`&nbsp;&nbsp; optionally use every pyramid layer in the production of the saliency map
 
-During run-time `x` will quit the program, `f` will toggle fullscreen, and `s` will toggle between saliency mapping and the input frames.
+During run-time, keyboard commands `x` will quit the program, `f` will toggle fullscreen, and `s` will toggle between saliency mapping and the original input image frames.
 
 ---
 
@@ -120,7 +122,7 @@ If you are making use of this work in any way please reference the following art
 
 For non-commercial use (i.e. academic, non-for-profit and research) the (very permissive) terms of the MIT free software [LICENSE](LICENSE) must be adhered to.
 
-For commercial use, the Division of Gaussians (DoG) saliency detection algorithm is patented (WIPO reference: [WO2013034878A3](https://patents.google.com/patent/WO2013034878A3/)) and available for licensing via [Cranfield University](https://www.cranfield.ac.uk/).
+For commercial use, the Division of Gaussians (DIVoG / DoG) saliency detection algorithm is patented (WIPO reference: [WO2013034878A3](https://patents.google.com/patent/WO2013034878A3/)) and available for licensing via [Cranfield University](https://www.cranfield.ac.uk/).
 
 ### Acknowledgements:
 
