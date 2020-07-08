@@ -62,6 +62,7 @@ class TestClass:
         test_map = test_saliency_mapper.generate_saliency(test_img)
         test_map_truth = cv2.imread(TRUTH_DIR + 'fig_2_saliency_mlm.png',
                                     0)
+
         assert np.array_equal(test_map, test_map_truth)
 
 ##########################################################################
