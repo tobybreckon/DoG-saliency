@@ -65,7 +65,9 @@ class TestClass:
         for i in range(len(test_map)):
             for x in range(i):
                 if test_map[i][x] != test_map_truth[i][x]:
-                    print("False" + str(i) + str(x))
+                    print("False")
+                    print(test_map[i][x])
+                    print(test_map_truth[i][x])
 
         assert np.array_equal(test_map, test_map_truth)
 
