@@ -1,7 +1,6 @@
 # Real-time Visual Saliency by Division of Gaussians - Reference Implementation
 
 ![Python - PEP8](https://github.com/tobybreckon/DoG-saliency/workflows/Python%20-%20PEP8/badge.svg)
-![Saliency Test](https://github.com/tobybreckon/DoG-saliency/workflows/Saliency%20Test/badge.svg)
 
 Tested using Python 3.7.5 and [OpenCV 4.2.0](http://www.opencv.org)
 
