@@ -62,12 +62,6 @@ class TestClass:
         test_map = test_saliency_mapper.generate_saliency(test_img)
         test_map_truth = cv2.imread(TRUTH_DIR + 'output.png',
                                     0)
-        for i in range(len(test_map)):
-            for x in range(i):
-                if test_map[i][x] != test_map_truth[i][x]:
-                    print("False")
-                    print(test_map[i][x])
-                    print(test_map_truth[i][x])
 
         assert np.array_equal(test_map, test_map_truth)
 
