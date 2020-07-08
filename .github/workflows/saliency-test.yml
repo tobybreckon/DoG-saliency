@@ -21,11 +21,6 @@ jobs:
       run: |
         python3.7 -m pip install --upgrade pip
         python3.7 -m pip install -r requirements.txt
-      # pip install pytest numpy opencv-contrib-python
-      # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with pytest
       run: |
         pytest test.py
-  #  - name: Test with pytest
-  #    run: |
-  #     pytest
