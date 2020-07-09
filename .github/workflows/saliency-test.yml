@@ -2,9 +2,9 @@ name: Saliency Test
 
 on:
   push:
-    branches: [ test ]
+    branches: [ hardware_acceleration ]
   pull_request:
-    branches: [ test ]
+    branches: [ hardware_acceleration ]
 
 jobs:
   build:
