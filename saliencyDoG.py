@@ -52,7 +52,7 @@ class SaliencyDoG:
         # perform pyrDown pyramid_height - 1 times, yielding pyramid_height
         # layers
         for layer in range(1, self.pyramid_height):
-            height, width = un.shape
+            height, width = cv2.UMat.get(un).shape
             un = cv2.pyrDown(un, (width/2, height/2))
 
             if self.multi_layer_map:
@@ -75,7 +75,7 @@ class SaliencyDoG:
         # perform pyrUp pyramid_height - 1 times, yielding pyramid_height
         # layers
         for layer in range(self.pyramid_height-2, -1, -1):
-            height, width = dn.shape
+            height, width = cv2.UMat.get(dn).shape
             dn = cv2.pyrUp(dn, (width*2, height*2))
 
             if self.multi_layer_map:
@@ -132,7 +132,9 @@ class SaliencyDoG:
         # [Katramados / Breckon 2011]
 
         # Convert pixels to 32-bit floats
+        src = cv2.UMat.get(src)
         src = src.astype(np.float32)
+        src = cv2.UMat(src)
 
         # Shift image by k^n to avoid division by zero or any number in range
         # 0.0 - 1.0
@@ -157,6 +159,8 @@ class SaliencyDoG:
 
     def generate_saliency(self, src):
 
+        src = cv2.UMat(src)
+
         if self.ch_3:
 
             # Split colour image into RBG channels
@@ -170,8 +174,8 @@ class SaliencyDoG:
 
             # Merge back into one grayscale image with floor division to keep
             # int pixel values
-            return (channel_array[0]//3 + channel_array[1]//3 +
-                    channel_array[2]//3)
+            return (cv2.UMat.get(channel_array[0])//3 + cv2.UMat.get(channel_array[1])//3 +
+                    cv2.UMat.get(channel_array[2])//3)
         else:
 
             # Convert to grayscale

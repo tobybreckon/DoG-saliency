@@ -135,10 +135,13 @@ if __name__ == "__main__":
             # ***
             # *** do any processing here ****
             # ***
-
+            import time
+            times = []
             if toggle_saliency:
+                start_time = time.time()
                 frame = saliency_mapper.generate_saliency(frame)
-
+                times.append(time.time() - start_time)
+                print(sum(times) / len(times))
             # display image
 
             cv2.imshow(window_name, frame)

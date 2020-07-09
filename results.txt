@@ -1,0 +1,5 @@
+old 3_ch = 0.0239 s / frame
+old 1_ch = 0.0106 s / frame
+
+new 1_ch = 0.0162 s / frame
+new 1_ch = 0.0266 s / frame
