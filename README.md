@@ -73,7 +73,7 @@ Ensure that all tests are passed before proceeding. If any tests fail, ensure yo
 Subsequently run the following command to obtain real-time saliency output from a connected camera or video file specified on the command line:
 
 ```
-$ python demo.py [-h] [-c CAMERA_TO_USE] [-r RESCALE] [-fs] [-g] [-l] [-m] [video_file]
+$ python3.x demo.py [-h] [-c CAMERA_TO_USE] [-r RESCALE] [-fs] [-g] [-l] [-m] [video_file]
 ```
 
 positional arguments:
