@@ -114,6 +114,15 @@ class SaliencyDoG:
 
         else:
 
+            # Check if u1 & d1 are same size
+            # (possible discrepencies from fractional height/width
+            # when creating pyramids)
+
+            if u1.shape != d1.shape:
+
+                # resize d1 to u1
+                d1 = cv2.resize(d1, u1.shape)
+
             # Calculate Minimum Ratio (MiR) Matrix
             matrix_ratio = cv2.divide(u1, d1)
             matrix_ratio_inv = cv2.divide(d1, u1)
