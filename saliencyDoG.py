@@ -77,7 +77,6 @@ class SaliencyDoG:
         for layer in range(self.pyramid_height-2, -1, -1):
             height, width = dn.shape
             dn = cv2.pyrUp(dn, (width*2, height*2))
-
             if self.multi_layer_map:
                 self.d_layers[layer] = dn
 

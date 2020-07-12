@@ -39,10 +39,13 @@ if __name__ == "__main__":
 
 
     # initialize saliency_mapper
-    saliency_mapper = SaliencyDoG(ch_3=not(args.grayscale),
-                                  low_pass_filter=args.low_pass_filter,
-                                  multi_layer_map=args.multi_layer_map)
+    saliency_mapper = SaliencyDoG()
 
+    img = cv2.imread(args.image_file)
 
+    saliency_map = saliency_mapper.generate_saliency(img)
+
+    cv2.imshow("Bounding Boxes", saliency_map)
+    cv2.waitKey(0)
 
 ##########################################################################
