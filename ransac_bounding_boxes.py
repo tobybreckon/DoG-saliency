@@ -37,15 +37,61 @@ if __name__ == "__main__":
 
     ##########################################################################
 
+    import random
 
     # initialize saliency_mapper
     saliency_mapper = SaliencyDoG()
 
     img = cv2.imread(args.image_file)
-
     saliency_map = saliency_mapper.generate_saliency(img)
-    print(saliency_map)
-    cv2.imshow("Bounding Boxes", saliency_map)
-    cv2.waitKey(0)
+    integral_image = cv2.integral(saliency_map)
+
+    minimum_box = 5
+
+    for box in range(1):
+
+        x1 = random.randint(0, integral_image.shape[0])
+        y1 = random.randint(0, integral_image.shape[1])
+
+        x2 = random.randint(0, integral_image.shape[0])
+        y2 = random.randint(0, integral_image.shape[1])
+
+        if abs(x1-x2) < 5 or abs(y1-y2) < 5:
+
+            continue
+
+        else:
+
+            x3 = x1
+            y3 = y2
+
+            x4 = x2
+            y4 = y1
+
+            print(x1, y1)
+            print(x2, y2)
+            print(x3, y3)
+            print(x4, y4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#    cv2.imshow("Bounding Boxes", output)
+#    cv2.waitKey(0)
 
 ##########################################################################
