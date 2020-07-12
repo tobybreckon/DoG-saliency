@@ -44,7 +44,7 @@ if __name__ == "__main__":
     img = cv2.imread(args.image_file)
 
     saliency_map = saliency_mapper.generate_saliency(img)
-
+    print(saliency_map)
     cv2.imshow("Bounding Boxes", saliency_map)
     cv2.waitKey(0)
 

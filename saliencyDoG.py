@@ -77,6 +77,7 @@ class SaliencyDoG:
         for layer in range(self.pyramid_height-2, -1, -1):
             height, width = dn.shape
             dn = cv2.pyrUp(dn, (width*2, height*2))
+
             if self.multi_layer_map:
                 self.d_layers[layer] = dn
 
@@ -112,6 +113,15 @@ class SaliencyDoG:
                 mir = mir_n
 
         else:
+
+            # Check if u1 & d1 are same size
+            # (possible discrepencies from fractional height/width
+            # when creating pyramids)
+
+            if u1.shape != d1.shape:
+
+                # resize d1 to u1
+                d1 = cv2.resize(d1, (u1.shape[1], u1.shape[0]))
 
             # Calculate Minimum Ratio (MiR) Matrix
             matrix_ratio = cv2.divide(u1, d1)
