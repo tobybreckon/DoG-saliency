@@ -47,53 +47,57 @@ if __name__ == "__main__":
     integral_image = cv2.integral(saliency_map)
 
     minimum_box = 5
-    threashold = 10000000
+    threashold = 30000
 
-    for box in range(100000):
+    for scale in range(1, 9):
 
-        x1 = random.randint(0, integral_image.shape[1] - 1)
-        y1 = random.randint(0, integral_image.shape[0] - 1)
+        saliency_map_scaled = cv2.resize(saliency_map, (saliency_map.shape[1]/2**scale, saliency_map.shape[0]/2**scale):
 
-        x2 = random.randint(0, integral_image.shape[1] - 1)
-        y2 = random.randint(0, integral_image.shape[0] - 1)
+        for box in range(100000):
 
-        if abs(x1-x2) < 5 or abs(y1-y2) < 5:
+            x1 = random.randint(0, (integral_image.shape[1] - 1) / 8)
+            y1 = random.randint(0, (integral_image.shape[0] - 1) / 8)
 
-            continue
+            x2 = random.randint(0, (integral_image.shape[1] - 1) / 8)
+            y2 = random.randint(0, (integral_image.shape[0] - 1) / 8)
 
-        else:
+            if abs(x1-x2) < 5 or abs(y1-y2) < 5:
+
+                continue
+
+            else:
 
 
-            xa = min(x1, x2)
-            ya = min(y1, y2)
+                xa = min(x1, x2)
+                ya = min(y1, y2)
 
-            xb = max(x1, x2)
-            yb = min(y1, y2)
+                xb = max(x1, x2)
+                yb = min(y1, y2)
 
-            xc = min(x1, x2)
-            yc = max(y1, y2)
+                xc = min(x1, x2)
+                yc = max(y1, y2)
 
-            xd = max(x1, x2)
-            yd = max(y1, y2)
+                xd = max(x1, x2)
+                yd = max(y1, y2)
 
 #            print(xa, ya)
 #            print(xb, yb)
 #            print(xc, yc)
 #            print(xd, yd)
 
-            box_saliency = integral_image[yd][xd] - integral_image[yb][xb] - integral_image[yc][xc] + integral_image[ya][xa]
+                box_saliency = integral_image[yd][xd] - integral_image[yb][xb] - integral_image[yc][xc] + integral_image[ya][xa]
 
-            if box_saliency < threashold:
+                if box_saliency < threashold:
 
-                continue
+                    continue
 
-            else:
+                else:
 
-                print(box_saliency)
-                img = cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                    print(box_saliency)
+                    saliency_map = cv2.rectangle(saliency_map, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
 
 
-    cv2.imwrite("BoundingBoxes.png", img)
+    cv2.imwrite("BoundingBoxes.png", saliency_map)
 
 ##########################################################################
