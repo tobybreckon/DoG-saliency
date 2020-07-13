@@ -73,10 +73,25 @@ if __name__ == "__main__":
             print(x3, y3)
             print(x4, y4)
 
+            xa = min(x1, x2)
+            ya = min(y1, y2)
+
+            xb = max(x1, x2)
+            yb = min(y1, y2)
+
+            xc = min(x1, x2)
+            yc = max(y1, y2)
+
+            xd = max(x1, x2)
+            yd = max(y1, y2)
+
+            print("################")
 
 
-
-
+            print(xa, ya)
+            print(xb, yb)
+            print(xc, yc)
+            print(xd, yd)
 
 
 
