@@ -47,14 +47,15 @@ if __name__ == "__main__":
     integral_image = cv2.integral(saliency_map)
 
     minimum_box = 5
+    threashold = 10000000
 
-    for box in range(1):
+    for box in range(100000):
 
-        x1 = random.randint(0, integral_image.shape[0])
-        y1 = random.randint(0, integral_image.shape[1])
+        x1 = random.randint(0, integral_image.shape[1] - 1)
+        y1 = random.randint(0, integral_image.shape[0] - 1)
 
-        x2 = random.randint(0, integral_image.shape[0])
-        y2 = random.randint(0, integral_image.shape[1])
+        x2 = random.randint(0, integral_image.shape[1] - 1)
+        y2 = random.randint(0, integral_image.shape[0] - 1)
 
         if abs(x1-x2) < 5 or abs(y1-y2) < 5:
 
@@ -62,16 +63,6 @@ if __name__ == "__main__":
 
         else:
 
-            x3 = x1
-            y3 = y2
-
-            x4 = x2
-            y4 = y1
-
-            print(x1, y1)
-            print(x2, y2)
-            print(x3, y3)
-            print(x4, y4)
 
             xa = min(x1, x2)
             ya = min(y1, y2)
@@ -85,28 +76,24 @@ if __name__ == "__main__":
             xd = max(x1, x2)
             yd = max(y1, y2)
 
-            print("################")
+#            print(xa, ya)
+#            print(xb, yb)
+#            print(xc, yc)
+#            print(xd, yd)
 
+            box_saliency = integral_image[yd][xd] - integral_image[yb][xb] - integral_image[yc][xc] + integral_image[ya][xa]
 
-            print(xa, ya)
-            print(xb, yb)
-            print(xc, yc)
-            print(xd, yd)
+            if box_saliency < threashold:
 
+                continue
 
+            else:
 
-
-
-
-
-
-
-
-
+                print(box_saliency)
+                img = cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
 
 
-#    cv2.imshow("Bounding Boxes", output)
-#    cv2.waitKey(0)
+    cv2.imwrite("BoundingBoxes.png", img)
 
 ##########################################################################
