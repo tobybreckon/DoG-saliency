@@ -8,6 +8,7 @@ import cv2
 import argparse
 import sys
 import random
+import time
 
 ##########################################################################
 
@@ -16,7 +17,7 @@ from saliencyDoG import SaliencyDoG
 ##########################################################################
 
 
-def ransac_bounding_boxes(img, min_box=250, threashold=28, samples=100000,
+def ransac_bounding_boxes(img, min_box=50, threashold=28, samples=10000,
                           box_colour=(0, 0, 255), box_line_thickness=1):
 
     # read in an image, generate it's saliency map and place bounding
@@ -28,6 +29,7 @@ def ransac_bounding_boxes(img, min_box=250, threashold=28, samples=100000,
     # box_colour = BGR tuple for box outine colour
     # box_line_thickness = box outline thickness
 
+    start = time.time()
     # initialize saliency_mapper
     saliency_mapper = SaliencyDoG()
 
