@@ -7,7 +7,6 @@
 import cv2
 import argparse
 import sys
-import math
 import random
 
 ##########################################################################
@@ -18,7 +17,7 @@ from saliencyDoG import SaliencyDoG
 
 
 def ransac_bounding_boxes(img, min_box=250, threashold=28, samples=100000,
-                          box_colour=(0,0,255), box_line_thickness=1):
+                          box_colour=(0, 0, 255), box_line_thickness=1):
 
     # read in an image, generate it's saliency map and place bounding
     # boxes
@@ -72,9 +71,8 @@ def ransac_bounding_boxes(img, min_box=250, threashold=28, samples=100000,
             xd = max(x1, x2)
             yd = max(y1, y2)
 
-
             box_saliency = (integral_image[yd][xd] - integral_image[yb][xb] -
-                    integral_image[yc][xc] + integral_image[ya][xa])
+                            integral_image[yc][xc] + integral_image[ya][xa])
 
             box_saliency_density = box_saliency / (abs(x1-x2) * abs(y1-y2))
 
@@ -86,6 +84,7 @@ def ransac_bounding_boxes(img, min_box=250, threashold=28, samples=100000,
     return output
 
 ##########################################################################
+
 
 if __name__ == "__main__":
 
@@ -104,7 +103,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ##########################################################################
-
 
     # read in image
     img = cv2.imread(args.image_file)
