@@ -50,11 +50,11 @@ if __name__ == "__main__":
 
     minimum_box = 5
     maximum_box = 50
-    threashold = 100000
+    threashold = 20000
 
     output = img
 
-    for scale in range(0, 1):
+    for scale in range(1, 4):
 
         saliency_map_scaled = cv2.resize(saliency_map, (saliency_map.shape[1]//(2**scale), saliency_map.shape[0]//(2**scale)))
 
