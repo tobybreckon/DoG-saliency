@@ -52,8 +52,7 @@ class SaliencyDoG:
         # perform pyrDown pyramid_height - 1 times, yielding pyramid_height
         # layers
         for layer in range(1, self.pyramid_height):
-            height, width = cv2.UMat.get(un).shape
-            un = cv2.pyrDown(un, (width/2, height/2))
+            un = cv2.pyrDown(un)
 
             if self.multi_layer_map:
                 self.u_layers[layer] = un
@@ -75,8 +74,7 @@ class SaliencyDoG:
         # perform pyrUp pyramid_height - 1 times, yielding pyramid_height
         # layers
         for layer in range(self.pyramid_height-2, -1, -1):
-            height, width = cv2.UMat.get(dn).shape
-            dn = cv2.pyrUp(dn, (width*2, height*2))
+            dn = cv2.pyrUp(dn)
 
             if self.multi_layer_map:
                 self.d_layers[layer] = dn
@@ -131,10 +129,6 @@ class SaliencyDoG:
         # Complete implementation of all 3 parts of algortihm defined in
         # [Katramados / Breckon 2011]
 
-        # Convert pixels to 32-bit floats
-        src = cv2.UMat.get(src)
-        src = src.astype(np.float32)
-        src = cv2.UMat(src)
 
         # Shift image by k^n to avoid division by zero or any number in range
         # 0.0 - 1.0
@@ -159,6 +153,8 @@ class SaliencyDoG:
 
     def generate_saliency(self, src):
 
+        # Convert pixels to 32-bit floats
+        src = src.astype(np.float32)
         src = cv2.UMat(src)
 
         if self.ch_3:
