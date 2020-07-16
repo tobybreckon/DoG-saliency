@@ -16,6 +16,8 @@ import numpy as np
 from saliencyDoG import SaliencyDoG
 
 ##########################################################################
+
+#https://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/
 # Malisiewicz et al.
 def non_max_suppression_fast(boxes, overlapThresh):
 	# if there are no boxes, return an empty list
@@ -63,7 +65,7 @@ def non_max_suppression_fast(boxes, overlapThresh):
 	# integer data type
 	return boxes[pick].astype("int")
 
-def ransac_bounding_boxes(img, min_box=50, threashold=40, samples=10000,
+def ransac_bounding_boxes(img, min_box=50, threashold=45, samples=100000,
                           box_colour=(0, 0, 255), box_line_thickness=1):
 
     # read in an image, generate it's saliency map and place bounding
@@ -131,8 +133,8 @@ def ransac_bounding_boxes(img, min_box=50, threashold=40, samples=10000,
                 boxes.append([x1, y1, x2, y2])
 
 
-    indices = non_max_suppression_fast(np.asarray(boxes), 0.99)
-    print(indices)
+    indices = non_max_suppression_fast(np.asarray(boxes), 0.4)
+#    print(indices)
 #            confidences.append(box_saliency_density)
 
 #    indices = cv2.dnn.NMSBoxes(boxes, confidences, threashold, 0.01)
@@ -178,12 +180,23 @@ if __name__ == "__main__":
     ##########################################################################
 
     # read in image
-    img = cv2.imread(args.image_file)
+#    img = cv2.imread(args.image_file)
 
     # generate bounding boxes
-    output = ransac_bounding_boxes(img)
+#    output = ransac_bounding_boxes(img)
 
-    cv2.imwrite("BoundingBoxes.png", output)
-    cv2.waitKey(0)
+    img = cv2.imread("test/samples/boat.jpg")
+#    cv2.imwrite("boat_box.png", ransac_bounding_boxes(img, 5, 50))
+
+    img = cv2.imread("test/samples/car.jpg")
+#    cv2.imwrite("car_box.png", ransac_bounding_boxes(img, 100, 50))
+
+    img = cv2.imread("test/samples/fig_2.png")
+#    cv2.imwrite("fig_2_box.png", ransac_bounding_boxes(img, 50, 70))
+
+    img = cv2.imread("test/samples/footballers.jpg")
+    cv2.imwrite("footballers_box.png", ransac_bounding_boxes(img, 25, 45))
+#    cv2.imwrite("BoundingBoxes.png", output)
+#    cv2.waitKey(0)
 
 ##########################################################################
