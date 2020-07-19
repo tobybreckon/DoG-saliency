@@ -18,7 +18,7 @@ from saliencyDoG import SaliencyDoG
 ##########################################################################
 
 
-def ransac_bounding_boxes(img, min_box=0.05, max_box=0.25, threashold=45,
+def ransac_bounding_boxes(img, min_box=0.05, max_box=0.5, threashold=2000000,
                           samples=100000, box_colour=(0, 0, 255),
                           box_line_thickness=1):
 
@@ -35,7 +35,7 @@ def ransac_bounding_boxes(img, min_box=0.05, max_box=0.25, threashold=45,
     start = time.time()
 
     # initialize saliency_mapper
-    saliency_mapper = SaliencyDoG()
+    saliency_mapper = SaliencyDoG(low_pass_filter=True, ch_3=True, multi_layer_map=True)
 
     # generate saliency map
     saliency_map = saliency_mapper.generate_saliency(img)
@@ -46,8 +46,7 @@ def ransac_bounding_boxes(img, min_box=0.05, max_box=0.25, threashold=45,
     # draw bounding boxes on original image
     output = img
 
-#    boxes = []
-#    confidences = []
+    boxes = []
 
     # -1 as indexing starts at 0
     frame_width = integral_image.shape[1] - 1
@@ -59,43 +58,64 @@ def ransac_bounding_boxes(img, min_box=0.05, max_box=0.25, threashold=45,
     max_box_width = round(max_box * frame_width)
     max_box_height = round(max_box * frame_height)
 
-    for box in range(samples):
+    for scale in range(2, -1, -1):
 
-        # pick random pixel - point 1
-        x1 = random.randint(min_box_width, frame_width)
-        y1 = random.randint(min_box_height, frame_height)
+        scale = 2**scale
 
-        # pick pixel to left and up of point 1
-        x2 = random.randint(max(0, x1 - max_box_width), x1 - min_box_width)
-        y2 = random.randint(max(0, y1 - max_box_height), y1 - min_box_height)
+#        scaled_frame_width = round(frame_width/scale)
+#        scaled_frame_height = round(frame_height/scale)
 
-        # define points a,b,c,d in integral image to calculate
-        # saliency in box
+        scaled_min_box_width = round(min_box * frame_width * scale)
+        scaled_min_box_height = round(min_box * frame_height * scale)
 
-        xa = min(x1, x2)
-        ya = min(y1, y2)
+        for box in range(samples):
 
-        xb = max(x1, x2)
-        yb = min(y1, y2)
+            # pick random pixel - point 1
+            x1 = random.randint(min_box_width, frame_width)
+            y1 = random.randint(min_box_height, frame_height)
 
-        xc = min(x1, x2)
-        yc = max(y1, y2)
+            # pick pixel to left and up of point 1
+            x2 = random.randint(max(0, x1 - max_box_width), x1 - min_box_width)
+            y2 = random.randint(max(0, y1 - max_box_height), y1 - min_box_height)
 
-        xd = max(x1, x2)
-        yd = max(y1, y2)
+            # define points a,b,c,d in integral image to calculate
+            # saliency in box
 
-        box_saliency = (integral_image[yd][xd] - integral_image[yb][xb] -
-                        integral_image[yc][xc] + integral_image[ya][xa])
+            xa = min(x1, x2)
+            ya = min(y1, y2)
 
-        box_saliency_density = box_saliency / (abs(x1-x2) * abs(y1-y2))
+            xb = max(x1, x2)
+            yb = min(y1, y2)
 
-        if box_saliency_density > threashold:
-#                boxes.append([x1, y1, x2, y2])
-#                confidences.append(box_saliency_density)
+            xc = min(x1, x2)
+            yc = max(y1, y2)
 
+            xd = max(x1, x2)
+            yd = max(y1, y2)
 
-            output = cv2.rectangle(output, (x1, y1), (x2, y2),
-                                   box_colour, box_line_thickness)
+            box_saliency = (integral_image[yd][xd] - integral_image[yb][xb] -
+                            integral_image[yc][xc] + integral_image[ya][xa])
+
+            box_saliency_density = box_saliency / (abs(x1-x2) * abs(y1-y2))
+
+            if box_saliency > threashold:
+
+                area = (x1-x2) * (y1-y2)
+
+                boxes.append((area, x1, y1, x2, y2))
+                boxes = sorted(boxes)
+                if len(boxes) > 100:
+                    boxes = boxes[:99]
+
+    for box in boxes:
+
+        x1 = box[1]
+        y1 = box[2]
+        x2 = box[3]
+        y2 = box[4]
+
+        output = cv2.rectangle(output, (x1, y1), (x2, y2),
+                               box_colour, box_line_thickness)
 
 
     print(time.time()-start)
