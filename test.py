@@ -8,6 +8,7 @@
 import os
 import cv2
 import numpy as np
+import pytest
 from saliencyDoG import SaliencyDoG
 
 ##########################################################################
@@ -29,7 +30,7 @@ class TestClass:
         test_map = test_saliency_mapper.generate_saliency(test_img)
         test_map_truth = cv2.imread(TRUTH_DIR + 'fig_2_saliency.png',
                                     0)
-        assert np.array_equal(test_map, test_map_truth)
+        assert np.array_equal(cv2.UMat.get(test_map), test_map_truth)
 
     def test_two(self):
 
@@ -40,7 +41,7 @@ class TestClass:
         test_map = test_saliency_mapper.generate_saliency(test_img)
         test_map_truth = cv2.imread(TRUTH_DIR + 'fig_2_saliency_3_ch.png',
                                     0)
-        assert np.array_equal(test_map, test_map_truth)
+        assert np.array_equal(cv2.UMat.get(test_map), test_map_truth)
 
     def test_three(self):
 
@@ -51,7 +52,7 @@ class TestClass:
         test_map = test_saliency_mapper.generate_saliency(test_img)
         test_map_truth = cv2.imread(TRUTH_DIR + 'fig_2_saliency_lp.png',
                                     0)
-        assert np.array_equal(test_map, test_map_truth)
+        assert np.array_equal(cv2.UMat.get(test_map), test_map_truth)
 
     def test_four(self):
 
@@ -62,7 +63,6 @@ class TestClass:
         test_map = test_saliency_mapper.generate_saliency(test_img)
         test_map_truth = cv2.imread(TRUTH_DIR + 'fig_2_saliency_mlm.png',
                                     0)
-
-        assert np.array_equal(test_map, test_map_truth)
+        assert np.array_equal(cv2.UMat.get(test_map), test_map_truth)
 
 ##########################################################################
