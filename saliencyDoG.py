@@ -178,12 +178,14 @@ class SaliencyDoG:
             for channel in range(3):
 
                 channel_array[channel] = self.divog_saliency(
-                        channel_array[channel])
+                        channel_array[channel], src_dimensions)
 
-            # Merge back into one grayscale image with floor division to keep
-            # int pixel values
-            return (cv2.UMat.get(channel_array[0])//3 + cv2.UMat.get(channel_array[1])//3 +
-                    cv2.UMat.get(channel_array[2])//3)
+            # Merge back into one grayscale image
+            merged_channels = cv2.merge(channel_array)
+            gray_merged_channels = cv2.cvtColor(merged_channels, cv2.COLOR_BGR2GRAY)
+
+            return gray_merged_channels
+
         else:
 
             # Convert to grayscale
