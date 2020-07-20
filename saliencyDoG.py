@@ -92,6 +92,12 @@ class SaliencyDoG:
             height, width = u1_dimensions
             mir = np.ones((height, width))
 
+            # Convert pixels to 32-bit floats
+            mir = mir.astype(np.float32)
+
+            # Use T-API for hardware acceleration
+            mir = cv2.UMat(mir)
+
             for layer in range(self.pyramid_height):
 
                 # corresponding pyramid layers are in same index pos.
@@ -107,7 +113,9 @@ class SaliencyDoG:
                 matrix_ratio_inv = cv2.divide(dn_scaled, un_scaled)
 
                 # Caluclate pixelwise min
-                mir_n = cv2.min(matrix_ratio, matrix_ratio_inv) * mir
+                x = cv2.multiply(mir, mir)
+                pixelwise_min = cv2.min(matrix_ratio, matrix_ratio_inv)
+                mir_n = cv2.multiply(pixelwise_min, mir)
                 mir = mir_n
 
         else:
