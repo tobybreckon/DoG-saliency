@@ -136,6 +136,9 @@ if __name__ == "__main__":
             # *** do any processing here ****
             # ***
 
+            if toggle_saliency:
+                frame = saliency_mapper.generate_saliency(frame)
+
             # display image
 
             cv2.imshow(window_name, frame)
