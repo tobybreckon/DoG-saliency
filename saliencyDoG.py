@@ -113,7 +113,6 @@ class SaliencyDoG:
                 matrix_ratio_inv = cv2.divide(dn_scaled, un_scaled)
 
                 # Caluclate pixelwise min
-                x = cv2.multiply(mir, mir)
                 pixelwise_min = cv2.min(matrix_ratio, matrix_ratio_inv)
                 mir_n = cv2.multiply(pixelwise_min, mir)
                 mir = mir_n
@@ -136,7 +135,6 @@ class SaliencyDoG:
 
         # Complete implementation of all 3 parts of algortihm defined in
         # [Katramados / Breckon 2011]
-
 
         # Shift image by k^n to avoid division by zero or any number in range
         # 0.0 - 1.0
@@ -182,7 +180,8 @@ class SaliencyDoG:
 
             # Merge back into one grayscale image
             merged_channels = cv2.merge(channel_array)
-            gray_merged_channels = cv2.cvtColor(merged_channels, cv2.COLOR_BGR2GRAY)
+            gray_merged_channels = cv2.cvtColor(merged_channels,
+                                                cv2.COLOR_BGR2GRAY)
 
             return gray_merged_channels
 
