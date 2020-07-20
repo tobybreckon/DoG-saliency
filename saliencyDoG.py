@@ -81,7 +81,7 @@ class SaliencyDoG:
 
         return dn
 
-    def saliency_map(self, u1, d1):
+    def saliency_map(self, u1, d1, u1_dimensions):
 
         # Produce S - step 3 of algorithm defined in [Katramados
         #                                             / Breckon 2011]
@@ -89,7 +89,7 @@ class SaliencyDoG:
         if self.multi_layer_map:
 
             # Initial MiR Matrix M0
-            height, width = u1.shape
+            height, width = u1_dimensions
             mir = np.ones((height, width))
 
             for layer in range(self.pyramid_height):
@@ -124,7 +124,7 @@ class SaliencyDoG:
 
         return s
 
-    def divog_saliency(self, src):
+    def divog_saliency(self, src, src_dimensions):
 
         # Complete implementation of all 3 parts of algortihm defined in
         # [Katramados / Breckon 2011]
@@ -139,7 +139,7 @@ class SaliencyDoG:
 
         un = self.bottom_up_gaussian_pyramid(src)
         d1 = self.top_down_gaussian_pyramid(un)
-        s = self.saliency_map(u1, d1)
+        s = self.saliency_map(u1, d1, src_dimensions)
 
         # Normalize to 0 - 255 int range
         s = cv2.normalize(s, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
@@ -155,6 +155,10 @@ class SaliencyDoG:
 
         # Convert pixels to 32-bit floats
         src = src.astype(np.float32)
+
+        src_dimensions = src.shape[:2]
+
+        # Use T-API for hardware acceleration
         src = cv2.UMat(src)
 
         if self.ch_3:
@@ -178,6 +182,6 @@ class SaliencyDoG:
             src_bw = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 
             # Generate Saliency Map
-            return self.divog_saliency(src_bw)
+            return self.divog_saliency(src_bw, src_dimensions)
 
 ##########################################################################
