@@ -69,7 +69,7 @@ def non_max_suppression_fast(boxes, overlapThresh):
 	# integer data type
 	return boxes[pick].astype("int"), x1
 
-def ransac_bounding_boxes(img, min_box=0.05, max_box=0.8, threashold=2000000,
+def ransac_bounding_boxes(img, min_box=0.05, max_box=0.95, threashold=2000000,
                           samples=100000, box_colour=(0, 0, 255),
                           box_line_thickness=1):
 
