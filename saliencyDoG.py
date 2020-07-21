@@ -52,8 +52,7 @@ class SaliencyDoG:
         # perform pyrDown pyramid_height - 1 times, yielding pyramid_height
         # layers
         for layer in range(1, self.pyramid_height):
-            height, width = un.shape
-            un = cv2.pyrDown(un, (width/2, height/2))
+            un = cv2.pyrDown(un)
 
             if self.multi_layer_map:
                 self.u_layers[layer] = un
@@ -75,15 +74,14 @@ class SaliencyDoG:
         # perform pyrUp pyramid_height - 1 times, yielding pyramid_height
         # layers
         for layer in range(self.pyramid_height-2, -1, -1):
-            height, width = dn.shape
-            dn = cv2.pyrUp(dn, (width*2, height*2))
+            dn = cv2.pyrUp(dn)
 
             if self.multi_layer_map:
                 self.d_layers[layer] = dn
 
         return dn
 
-    def saliency_map(self, u1, d1):
+    def saliency_map(self, u1, d1, u1_dimensions):
 
         # Produce S - step 3 of algorithm defined in [Katramados
         #                                             / Breckon 2011]
@@ -91,8 +89,14 @@ class SaliencyDoG:
         if self.multi_layer_map:
 
             # Initial MiR Matrix M0
-            height, width = u1.shape
+            height, width = u1_dimensions
             mir = np.ones((height, width))
+
+            # Convert pixels to 32-bit floats
+            mir = mir.astype(np.float32)
+
+            # Use T-API for hardware acceleration
+            mir = cv2.UMat(mir)
 
             for layer in range(self.pyramid_height):
 
@@ -109,7 +113,8 @@ class SaliencyDoG:
                 matrix_ratio_inv = cv2.divide(dn_scaled, un_scaled)
 
                 # Caluclate pixelwise min
-                mir_n = cv2.min(matrix_ratio, matrix_ratio_inv) * mir
+                pixelwise_min = cv2.min(matrix_ratio, matrix_ratio_inv)
+                mir_n = cv2.multiply(pixelwise_min, mir)
                 mir = mir_n
 
         else:
@@ -135,13 +140,10 @@ class SaliencyDoG:
 
         return s
 
-    def divog_saliency(self, src):
+    def divog_saliency(self, src, src_dimensions):
 
         # Complete implementation of all 3 parts of algortihm defined in
         # [Katramados / Breckon 2011]
-
-        # Convert pixels to 32-bit floats
-        src = src.astype(np.float32)
 
         # Shift image by k^n to avoid division by zero or any number in range
         # 0.0 - 1.0
@@ -152,7 +154,7 @@ class SaliencyDoG:
 
         un = self.bottom_up_gaussian_pyramid(src)
         d1 = self.top_down_gaussian_pyramid(un)
-        s = self.saliency_map(u1, d1)
+        s = self.saliency_map(u1, d1, src_dimensions)
 
         # Normalize to 0 - 255 int range
         s = cv2.normalize(s, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
@@ -166,6 +168,14 @@ class SaliencyDoG:
 
     def generate_saliency(self, src):
 
+        # Convert pixels to 32-bit floats
+        src = src.astype(np.float32)
+
+        src_dimensions = src.shape[:2]
+
+        # Use T-API for hardware acceleration
+        src = cv2.UMat(src)
+
         if self.ch_3:
 
             # Split colour image into RBG channels
@@ -175,18 +185,21 @@ class SaliencyDoG:
             for channel in range(3):
 
                 channel_array[channel] = self.divog_saliency(
-                        channel_array[channel])
+                        channel_array[channel], src_dimensions)
 
-            # Merge back into one grayscale image with floor division to keep
-            # int pixel values
-            return (channel_array[0]//3 + channel_array[1]//3 +
-                    channel_array[2]//3)
+            # Merge back into one grayscale image
+            merged_channels = cv2.merge(channel_array)
+            gray_merged_channels = cv2.cvtColor(merged_channels,
+                                                cv2.COLOR_BGR2GRAY)
+
+            return gray_merged_channels
+
         else:
 
             # Convert to grayscale
             src_bw = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 
             # Generate Saliency Map
-            return self.divog_saliency(src_bw)
+            return self.divog_saliency(src_bw, src_dimensions)
 
 ##########################################################################
