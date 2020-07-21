@@ -56,20 +56,20 @@ def non_max_suppression_fast(boxes, overlapThresh):
 		# compute the width and height of the bounding box
 		w = np.maximum(0, xx2 - xx1 + 1)
 		h = np.maximum(0, yy2 - yy1 + 1)
-		print(xx1, yy1, xx2, yy2)
+#		print(xx1, yy1, xx2, yy2)
 #		print(w)
 #		print(h)
 		# compute the ratio of overlap
 		overlap = (w * h) / area[idxs[:last]]
 		# delete all indexes from the index list that have
-		print(overlap)
+#		print(overlap)
 		idxs = np.delete(idxs, np.concatenate(([last],
 			np.where(overlap > overlapThresh)[0])))
 	# return only the bounding boxes that were picked using the
 	# integer data type
 	return boxes[pick].astype("int"), x1
 
-def ransac_bounding_boxes(img, min_box=0.05, max_box=0.5, threashold=2000000,
+def ransac_bounding_boxes(img, min_box=0.05, max_box=0.8, threashold=2000000,
                           samples=100000, box_colour=(0, 0, 255),
                           box_line_thickness=1):
 
@@ -109,10 +109,10 @@ def ransac_bounding_boxes(img, min_box=0.05, max_box=0.5, threashold=2000000,
     max_box_width = round(max_box * frame_width)
     max_box_height = round(max_box * frame_height)
 
-    for scale in range(2, -1, -1):
+    for scale in range(0, -1, -1):
         
-        if len(boxes) > 100:
-            break
+#        if len(boxes) > 100:
+#            break
 
         scale = 2**scale
 
@@ -124,8 +124,8 @@ def ransac_bounding_boxes(img, min_box=0.05, max_box=0.5, threashold=2000000,
 
         for box in range(samples):
 
-            if len(boxes) > 100:
-                break
+#            if len(boxes) > 100:
+#                break
 
             # pick random pixel - point 1
             x1 = random.randint(min_box_width, frame_width)
@@ -157,24 +157,24 @@ def ransac_bounding_boxes(img, min_box=0.05, max_box=0.5, threashold=2000000,
 
             if box_saliency > threashold:
 
-                area = (x1-x2) * (y1-y2)
+#                area = (x1-x2) * (y1-y2)
 
-                boxes.append((x2, y2, x1, y1))
-                boxes = sorted(boxes)
-                if len(boxes) > 100:
-                    boxes = boxes[:99]
+                boxes.append((xa, ya, xd, yd))
+#                boxes = sorted(boxes)
+#                if len(boxes) > 100:
+#                    boxes = boxes[:99]
 #    print(np.array(boxes))
-    new_boxes, x1 = non_max_suppression_fast(np.array(boxes), 0.4)
-    print(len(new_boxes))
+    new_boxes, x1 = non_max_suppression_fast(np.array(boxes), 0.01)
+#    print(len(new_boxes))
 #    print(x1)
     for box in new_boxes:
 
-        x1 = box[0]
-        y1 = box[1]
-        x2 = box[2]
-        y2 = box[3]
+        xa = box[0]
+        ya = box[1]
+        xd = box[2]
+        yd = box[3]
 
-        output = cv2.rectangle(output, (x1, y1), (x2, y2),
+        output = cv2.rectangle(output, (xa, ya), (xd, yd),
                                box_colour, box_line_thickness)
 
 
