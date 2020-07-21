@@ -55,6 +55,7 @@ where parameters:
 - `low_pass_filter` - toggle low pass filter - default = False
 - `multi_layer_map` - the second version of the algortihm as defined in [Katramados / Breckon 2011] (significantly slower, with simmilar results) - default = False
 
+The SaliencyDoG class makes use of the [Transparent API (T-API)](https://www.learnopencv.com/opencv-transparent-api/), to make use of any possible hardware acceleration
 
 ---
 
