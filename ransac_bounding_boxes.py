@@ -101,7 +101,7 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
     # draw bounding boxes on original image
     output = img
 
-    boxes = []
+    bounding_boxes = []
 
     # -1 as indexing starts at 0
     frame_width = integral_image.shape[1] - 1
@@ -137,11 +137,12 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
 
         if box_saliency > threashold:
 
-            boxes.append((xa, ya, xd, yd))
+            bounding_boxes.append((xa, ya, xd, yd))
 
-    nms_boxes, x1 = non_max_suppression_fast(np.array(boxes), nms_threashold)
+    nms_bounding_boxes, x1 = non_max_suppression_fast(np.array(bounding_boxes),
+                                                      nms_threashold)
 
-    for box in nms_boxes:
+    for box in nms_bounding_boxes:
 
         xa = box[0]
         ya = box[1]
