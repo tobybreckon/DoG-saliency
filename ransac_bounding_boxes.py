@@ -17,60 +17,62 @@ from saliencyDoG import SaliencyDoG
 
 ##########################################################################
 
+
+# https://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/
 # Malisiewicz et al.
 def non_max_suppression_fast(boxes, overlapThresh):
-	# if there are no boxes, return an empty list
-	if len(boxes) == 0:
-		return []
-	# if the bounding boxes integers, convert them to floats --
-	# this is important since we'll be doing a bunch of divisions
-	if boxes.dtype.kind == "i":
-		boxes = boxes.astype("float")
-	# initialize the list of picked indexes	
-	pick = []
-	# grab the coordinates of the bounding boxes
-	x1 = boxes[:,0]
-	y1 = boxes[:,1]
-	x2 = boxes[:,2]
-	y2 = boxes[:,3]
-	
-	# compute the area of the bounding boxes and sort the bounding
-	# boxes by the bottom-right y-coordinate of the bounding box
-	area = (x2 - x1 + 1) * (y2 - y1 + 1)
-	idxs = np.argsort(y2)
-	# keep looping while some indexes still remain in the indexes
-	# list
-	while len(idxs) > 0:
-		# grab the last index in the indexes list and add the
-		# index value to the list of picked indexes
-		last = len(idxs) - 1
-		i = idxs[last]
-		pick.append(i)
-		# find the largest (x, y) coordinates for the start of
-		# the bounding box and the smallest (x, y) coordinates
-		# for the end of the bounding box
-		xx1 = np.maximum(x1[i], x1[idxs[:last]])
-		yy1 = np.maximum(y1[i], y1[idxs[:last]])
-		xx2 = np.minimum(x2[i], x2[idxs[:last]])
-		yy2 = np.minimum(y2[i], y2[idxs[:last]])
-		# compute the width and height of the bounding box
-		w = np.maximum(0, xx2 - xx1 + 1)
-		h = np.maximum(0, yy2 - yy1 + 1)
-#		print(xx1, yy1, xx2, yy2)
-#		print(w)
-#		print(h)
-		# compute the ratio of overlap
-		overlap = (w * h) / area[idxs[:last]]
-		# delete all indexes from the index list that have
-#		print(overlap)
-		idxs = np.delete(idxs, np.concatenate(([last],
-			np.where(overlap > overlapThresh)[0])))
-	# return only the bounding boxes that were picked using the
-	# integer data type
-	return boxes[pick].astype("int"), x1
+    # if there are no boxes, return an empty list
+    if len(boxes) == 0:
+        return []
+    # if the bounding boxes integers, convert them to floats --
+    # this is important since we'll be doing a bunch of divisions
+    if boxes.dtype.kind == "i":
+        boxes = boxes.astype("float")
+    # initialize the list of picked indexes
+    pick = []
+    # grab the coordinates of the bounding boxes
+    x1 = boxes[:, 0]
+    y1 = boxes[:, 1]
+    x2 = boxes[:, 2]
+    y2 = boxes[:, 3]
+
+    # compute the area of the bounding boxes and sort the bounding
+    # boxes by the bottom-right y-coordinate of the bounding box
+    area = (x2 - x1 + 1) * (y2 - y1 + 1)
+    idxs = np.argsort(y2)
+    # keep looping while some indexes still remain in the indexes
+    # list
+    while len(idxs) > 0:
+        # grab the last index in the indexes list and add the
+        # index value to the list of picked indexes
+        last = len(idxs) - 1
+        i = idxs[last]
+        pick.append(i)
+        # find the largest (x, y) coordinates for the start of
+        # the bounding box and the smallest (x, y) coordinates
+        # for the end of the bounding box
+        xx1 = np.maximum(x1[i], x1[idxs[:last]])
+        yy1 = np.maximum(y1[i], y1[idxs[:last]])
+        xx2 = np.minimum(x2[i], x2[idxs[:last]])
+        yy2 = np.minimum(y2[i], y2[idxs[:last]])
+        # compute the width and height of the bounding box
+        w = np.maximum(0, xx2 - xx1 + 1)
+        h = np.maximum(0, yy2 - yy1 + 1)
+        # compute the ratio of overlap
+        overlap = (w * h) / area[idxs[:last]]
+        # delete all indexes from the index list that have
+        idxs = np.delete(idxs, np.concatenate(([last],
+                         np.where(overlap > overlapThresh)[0])))
+    # return only the bounding boxes that were picked using the
+    # integer data type
+    return boxes[pick].astype("int"), x1
+
+##########################################################################
+
 
 def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
-                          samples=100000, box_colour=(0, 0, 255),
+                          samples=100000, nms_threashold=0.1,
+                          box_colour=(0, 0, 255),
                           box_line_thickness=1):
 
     # read in an image, generate it's saliency map and place bounding
@@ -80,13 +82,15 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
     # max_box = maximum boudning box size as percentage of frame dimensions
     # threashold = saliency density (saliency per pixel)
     # samples = number of random samples to take
+    # nms_threahsold = acceptable overlap threashold for nms
     # box_colour = BGR tuple for box outine colour
     # box_line_thickness = box outline thickness
 
     start = time.time()
 
     # initialize saliency_mapper
-    saliency_mapper = SaliencyDoG(low_pass_filter=True, ch_3=True, multi_layer_map=True)
+    saliency_mapper = SaliencyDoG(low_pass_filter=True, ch_3=True,
+                                  multi_layer_map=True)
 
     # generate saliency map
     saliency_map = saliency_mapper.generate_saliency(img)
@@ -109,65 +113,35 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
     max_box_width = round(max_box * frame_width)
     max_box_height = round(max_box * frame_height)
 
-    for scale in range(0, -1, -1):
-        
-#        if len(boxes) > 100:
-#            break
+    for box in range(samples):
 
-        scale = 2**scale
+        # define points a,b,c,d in integral image to calculate
+        # saliency in box
 
-#        scaled_frame_width = round(frame_width/scale)
-#        scaled_frame_height = round(frame_height/scale)
+        # pick random pixel - point d
+        xd = random.randint(min_box_width, frame_width)
+        yd = random.randint(min_box_height, frame_height)
 
-        scaled_min_box_width = round(min_box * frame_width * scale)
-        scaled_min_box_height = round(min_box * frame_height * scale)
+        # pick point a to left and up of point d
+        xa = random.randint(max(0, xd - max_box_width), xd - min_box_width)
+        ya = random.randint(max(0, yd - max_box_height), yd - min_box_height)
 
-        for box in range(samples):
+        xb = xd
+        yb = ya
 
-#            if len(boxes) > 100:
-#                break
+        xc = xa
+        yc = yd
 
-            # pick random pixel - point 1
-            x1 = random.randint(min_box_width, frame_width)
-            y1 = random.randint(min_box_height, frame_height)
+        box_saliency = (integral_image[yd][xd] - integral_image[yb][xb] -
+                        integral_image[yc][xc] + integral_image[ya][xa])
 
-            # pick pixel to left and up of point 1
-            x2 = random.randint(max(0, x1 - max_box_width), x1 - min_box_width)
-            y2 = random.randint(max(0, y1 - max_box_height), y1 - min_box_height)
+        if box_saliency > threashold:
 
-            # define points a,b,c,d in integral image to calculate
-            # saliency in box
+            boxes.append((xa, ya, xd, yd))
 
-            xa = min(x1, x2)
-            ya = min(y1, y2)
+    nms_boxes, x1 = non_max_suppression_fast(np.array(boxes), nms_threashold)
 
-            xb = max(x1, x2)
-            yb = min(y1, y2)
-
-            xc = min(x1, x2)
-            yc = max(y1, y2)
-
-            xd = max(x1, x2)
-            yd = max(y1, y2)
-
-            box_saliency = (integral_image[yd][xd] - integral_image[yb][xb] -
-                            integral_image[yc][xc] + integral_image[ya][xa])
-
-            box_saliency_density = box_saliency / (abs(x1-x2) * abs(y1-y2))
-
-            if box_saliency > threashold:
-
-#                area = (x1-x2) * (y1-y2)
-
-                boxes.append((xa, ya, xd, yd))
-#                boxes = sorted(boxes)
-#                if len(boxes) > 100:
-#                    boxes = boxes[:99]
-#    print(np.array(boxes))
-    new_boxes, x1 = non_max_suppression_fast(np.array(boxes), 0.1)
-#    print(len(new_boxes))
-#    print(x1)
-    for box in new_boxes:
+    for box in nms_boxes:
 
         xa = box[0]
         ya = box[1]
@@ -176,7 +150,6 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
 
         output = cv2.rectangle(output, (xa, ya), (xd, yd),
                                box_colour, box_line_thickness)
-
 
     print(time.time()-start)
 
