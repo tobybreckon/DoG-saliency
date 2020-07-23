@@ -21,7 +21,8 @@ def draw_bounding_boxes(bboxes, img, box_colour=(0, 0, 255),
                         box_line_thickness=1):
 
     # Draw bounding boxes onto an image
-
+    # boxes in format: [left_x, left_y, box_width, box_height]
+    
     # box_colour = BGR tuple for box outine colour
     # box_line_thickness = box outline thickness
 
@@ -40,8 +41,8 @@ def draw_bounding_boxes(bboxes, img, box_colour=(0, 0, 255),
 ##########################################################################
 
 
-def ransac_bounding_boxes(img, min_box=0.25, max_box=0.5, threashold=2000000,
-                          samples=100000, nms_threashold=0.1):
+def ransac_bounding_boxes(img, min_box=0.25, max_box=0.9, threashold=2000000,
+                          samples=100000, nms_threashold=0.1, n=1):
 
     # read in an image, generate it's saliency map and generate bounding
     # boxes in format: [left_x, left_y, box_width, box_height]
@@ -51,6 +52,7 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.5, threashold=2000000,
     # threashold = saliency density (saliency per pixel)
     # samples = number of random samples to take
     # nms_threahsold = acceptable overlap threashold for nms
+    # n = maximum number of bounding boxes
 
     start = time.time()
 
@@ -107,15 +109,25 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.5, threashold=2000000,
             bounding_boxes.append([xa, ya, box_width, box_height])
             box_confidences.append(float(box_saliency))
 
+    # perform Non Maximum Suppression
     indices = cv2.dnn.NMSBoxes(bounding_boxes, box_confidences, threashold,
                                nms_threashold)
-
-    nms_bounding_boxes = []
+    
+    # select n best boxes
+    n_best_boxes = []
 
     for idx in indices:
 
-        # unpack idx
-        idx = idx[0]
+        n_best_boxes.append(idx[0])
+        n_best_boxes = sorted(n_best_boxes)
+
+        if len(n_best_boxes) > n:
+            n_best_boxes = n_best_boxes[:n-1]
+
+
+    nms_bounding_boxes = []
+
+    for idx in n_best_boxes:
 
         box = bounding_boxes[idx]
         xa = box[0]
