@@ -79,7 +79,7 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.9, threashold=2000000,
     max_box_width = int(max_box * frame_width)
     max_box_height = int(max_box * frame_height)
 
-    for box in range(samples):
+    for box in range(int(samples)):
 
         # define points a,b,c,d in integral image to calculate
         # saliency in box
@@ -121,8 +121,8 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.9, threashold=2000000,
         n_best_boxes.append(idx[0])
         n_best_boxes = sorted(n_best_boxes)
 
-        if len(n_best_boxes) > n:
-            n_best_boxes = n_best_boxes[:n-1]
+        if len(n_best_boxes) > int(n):
+            n_best_boxes = n_best_boxes[:int(n)-1]
 
 
     nms_bounding_boxes = []

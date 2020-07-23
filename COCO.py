@@ -1,5 +1,6 @@
 from pycocotools.coco import COCO
 import numpy as np
+from scipy.optimize import minimize
 import cv2
 from ransac_bounding_boxes import ransac_bounding_boxes
 
@@ -23,47 +24,111 @@ def bb_intersection_over_union(boxA, boxB):
     # return the intersection over union value
     return iou
 
-ANNOTATIONS_FILE_PATH = "/media/sf_COCO/annotations_trainval2017/annotations/person_keypoints_val2017.json"
-IMAGES_FILE_PATH = "/media/sf_COCO/val2017/"
-
-coco = COCO(ANNOTATIONS_FILE_PATH)
-
-# get category id for 'person'
-catIds = coco.getCatIds(catNms=['person'])
-
-# get annotation id for these cats, and no crowd
-annIds = coco.getAnnIds(catIds=catIds, iscrowd=None)
-
-# load these annotations
-anns = coco.loadAnns(annIds)
-
-for annotation in anns:
+def calculateIOU(x):
+    min_box=x[0]
+    max_box=x[1]
+    threashold=x[2]
+    samples=x[3] 
+    nms_threashold=x[4]
+    n=x[5]
     
-    # load associated image
-    img_id = annotation["image_id"]
-    img_file_name = coco.loadImgs(img_id)[0]['file_name']
-    img = cv2.imread(IMAGES_FILE_PATH + img_file_name)
+    ANNOTATIONS_FILE_PATH = "/media/sf_COCO/annotations_trainval2017/annotations/person_keypoints_val2017.json"
+    IMAGES_FILE_PATH = "/media/sf_COCO/val2017/"
 
-    # perform bounding box by saliency
-    predicted = ransac_bounding_boxes(img)
-    
-    # just take first bounding box for now
-    predicted = predicted[0]
+    coco = COCO(ANNOTATIONS_FILE_PATH)
 
-    # bounding boxes given as top left coords, width, height
-    ground_truth = annotation['bbox']
-    ground_truth = [int(x) for x in ground_truth]
+    # get category id for 'person'
+    catIds = coco.getCatIds(catNms=['person'])
 
-    # bounding boxes as pair of coordinates
-    ground_truth_coords = [ground_truth[0], ground_truth[1], ground_truth[0] + ground_truth[2], ground_truth[1] + ground_truth[3]]
-    predicted_coords = [predicted[0], predicted[1], predicted[0] + predicted[2], predicted[1] + predicted[3]]
+    # get annotation id for these cats, and no crowd
+    annIds = coco.getAnnIds(catIds=catIds, iscrowd=None)
 
-    iou = bb_intersection_over_union(ground_truth_coords, predicted_coords)
+    # load these annotations
+    anns = coco.loadAnns(annIds)
 
-    print(ground_truth)
-    print(predicted)
+    for annotation in anns:
+        
+        # load associated image
+        img_id = annotation["image_id"]
+        img_file_name = coco.loadImgs(img_id)[0]['file_name']
+        img = cv2.imread(IMAGES_FILE_PATH + img_file_name)
 
-    print(iou)
+        # perform bounding box by saliency
+        predicted = ransac_bounding_boxes(img, min_box, max_box, threashold, samples, nms_threashold, n)
 
-    # just do one image for now
-    break
+        # no bounding box = 0 iou
+        if len(predicted) == 0:
+            return 0.0
+
+        # just take best bounding box for now
+        predicted = predicted[-1]
+
+        # bounding boxes given as top left coords, width, height
+        ground_truth = annotation['bbox']
+        ground_truth = [int(x) for x in ground_truth]
+
+        # bounding boxes as pair of coordinates
+        ground_truth_coords = [ground_truth[0], ground_truth[1], ground_truth[0] + ground_truth[2], ground_truth[1] + ground_truth[3]]
+        predicted_coords = [predicted[0], predicted[1], predicted[0] + predicted[2], predicted[1] + predicted[3]]
+
+        iou = bb_intersection_over_union(ground_truth_coords, predicted_coords)
+
+#        print(ground_truth)
+#        print(predicted)
+
+        print(iou)
+
+        # just do one image for now
+        break
+
+    return iou
+
+def objective(x):
+    # negative as maximization 
+    return -calculateIOU(x)
+
+def constraint1(x):
+    # max box < 1
+    return 1 - x[1]
+
+def constraint2(x):
+    # min box < 0.5
+    return 0.5 - x[0]
+
+def constraint3(x):
+    # min box < max box
+    return x[1] - x[0]
+
+#def constraint4(x):
+#    # 0 < min box
+#    return x[0] - 0
+
+b1 = (0.0, 0.49)
+b2 = (0.5, 1.0)
+b3 = (0,10000000)
+b4 = (0, 1000000)
+b5 = (0, 1)
+b6 = (1, 100)
+bnds = (b1,b2,b3,b4,b5,b6)
+
+cons1 = ({'type': 'ineq', 'fun': constraint2})
+cons2 = ({'type': 'ineq', 'fun': constraint2})
+cons3 = ({'type': 'ineq', 'fun': constraint3})
+#cons4 = ({'type': 'ineq', 'fun': constraint4})
+cons = [cons1, cons2, cons3]#, cons4]
+
+min_box_guess=0.25
+max_box_guess=0.9
+threashold_guess=2000000
+samples_guess=100000
+nms_threashold_guess=0.1
+n_guess=1
+
+x0 = np.array([min_box_guess, max_box_guess, threashold_guess, samples_guess, nms_threashold_guess, n_guess])
+
+sol = minimize(objective,x0,method="Nelder-Mead",bounds=bnds,constraints=cons,options={"disp": True})
+
+xOpt = sol.x
+IOUOpt = -sol.fun
+
+print(xOpt)
