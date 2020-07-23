@@ -52,12 +52,9 @@ for annotation in anns:
 
     # bounding boxes given as top left coords, width, height
     ground_truth = annotation['bbox']
-
-    # convert to 2 sets of coords
-    ground_truth[2] = ground_truth[0] + ground_truth[2]
-    ground_truth[3] = ground_truth[1] + ground_truth[3]
     ground_truth = [int(x) for x in ground_truth]
 
+    # bounding boxes as pair of coordinates
     ground_truth_coords = [ground_truth[0], ground_truth[1], ground_truth[0] + ground_truth[2], ground_truth[1] + ground_truth[3]]
     predicted_coords = [predicted[0], predicted[1], predicted[0] + predicted[2], predicted[1] + predicted[3]]
 
@@ -68,4 +65,5 @@ for annotation in anns:
 
     print(iou)
 
+    # just do one image for now
     break
