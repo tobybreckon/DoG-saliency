@@ -70,21 +70,38 @@ def non_max_suppression_fast(boxes, overlapThresh):
 ##########################################################################
 
 
-def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
-                          samples=100000, nms_threashold=0.1,
-                          box_colour=(0, 0, 255),
-                          box_line_thickness=1):
+def draw_bounding_boxes(bboxes, img, box_colour=(0, 0, 255),
+                        box_line_thickness=1):
+    
+    # Draw bounding boxes onto an image
+    
+    # box_colour = BGR tuple for box outine colour
+    # box_line_thickness = box outline thickness
+    
+    for box in bboxes:
 
-    # read in an image, generate it's saliency map and place bounding
-    # boxes
+        xa = box[0]
+        ya = box[1]
+        box_width = box[2]
+        box_height = box[3]
+
+        img = cv2.rectangle(img, (xa, ya), (xa + box_width, ya + box_height),
+                            box_colour, box_line_thickness)
+
+    return img
+
+
+def ransac_bounding_boxes(img, min_box=0.25, max_box=0.5, threashold=2000000,
+                          samples=100000, nms_threashold=0.1):
+
+    # read in an image, generate it's saliency map and generate bounding
+    # boxes in format: [left_x, left_y, box_width, box_height]
 
     # min_box = minimum boudning box size as percentage of frame dimensions
     # max_box = maximum boudning box size as percentage of frame dimensions
     # threashold = saliency density (saliency per pixel)
     # samples = number of random samples to take
     # nms_threahsold = acceptable overlap threashold for nms
-    # box_colour = BGR tuple for box outine colour
-    # box_line_thickness = box outline thickness
 
     start = time.time()
 
@@ -98,20 +115,18 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
     # generate integral image
     integral_image = cv2.integral(saliency_map)
 
-    # draw bounding boxes on original image
-    output = img
-
     bounding_boxes = []
+    box_confidences = []
 
     # -1 as indexing starts at 0
     frame_width = integral_image.shape[1] - 1
     frame_height = integral_image.shape[0] - 1
 
-    min_box_width = round(min_box * frame_width)
-    min_box_height = round(min_box * frame_height)
+    min_box_width = int(min_box * frame_width)
+    min_box_height = int(min_box * frame_height)
 
-    max_box_width = round(max_box * frame_width)
-    max_box_height = round(max_box * frame_height)
+    max_box_width = int(max_box * frame_width)
+    max_box_height = int(max_box * frame_height)
 
     for box in range(samples):
 
@@ -137,24 +152,32 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.99, threashold=2000000,
 
         if box_saliency > threashold:
 
-            bounding_boxes.append((xa, ya, xd, yd))
+            box_width = xd - xa
+            box_height = yd - ya
 
-    nms_bounding_boxes, x1 = non_max_suppression_fast(np.array(bounding_boxes),
-                                                      nms_threashold)
+            bounding_boxes.append([xa, ya, box_width, box_height])
+            box_confidences.append(float(box_saliency))
 
-    for box in nms_bounding_boxes:
+    indices = cv2.dnn.NMSBoxes(bounding_boxes, box_confidences, threashold, nms_threashold)
 
+    nms_bounding_boxes = []
+
+    for idx in indices:
+        
+        # unpack idx
+        idx = idx[0]
+
+        box = bounding_boxes[idx]
         xa = box[0]
         ya = box[1]
-        xd = box[2]
-        yd = box[3]
+        box_width = box[2]
+        box_height = box[3]
 
-        output = cv2.rectangle(output, (xa, ya), (xd, yd),
-                               box_colour, box_line_thickness)
+        nms_bounding_boxes.append([xa, ya, box_width, box_height])
 
     print(time.time()-start)
 
-    return output
+    return nms_bounding_boxes
 
 ##########################################################################
 
@@ -175,13 +198,13 @@ if __name__ == "__main__":
         help='specify image file')
     args = parser.parse_args()
 
-    ##########################################################################
-
     # read in image
     img = cv2.imread(args.image_file)
 
     # generate bounding boxes
-    output = ransac_bounding_boxes(img)
+    bboxes = ransac_bounding_boxes(img)
+
+    output = draw_bounding_boxes(bboxes, img)
 
     cv2.imwrite("BoundingBoxes.png", output)
     cv2.waitKey(0)
