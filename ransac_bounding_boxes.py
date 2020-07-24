@@ -22,7 +22,7 @@ def draw_bounding_boxes(bboxes, img, box_colour=(0, 0, 255),
 
     # Draw bounding boxes onto an image
     # boxes in format: [left_x, left_y, box_width, box_height]
-    
+
     # box_colour = BGR tuple for box outine colour
     # box_line_thickness = box outline thickness
 
@@ -41,8 +41,10 @@ def draw_bounding_boxes(bboxes, img, box_colour=(0, 0, 255),
 ##########################################################################
 
 
-def ransac_bounding_boxes(img, min_box=0.25, max_box=0.9, threashold=2000000,
-                          samples=100000, nms_threashold=0.1, n=1):
+def ransac_bounding_boxes(img, min_box=0.25, max_box=0.4,
+                          threashold=2082689, samples=99752,
+                          nms_threashold=0.09, n=1, log=True, lpf=True,
+                          channels_3=False, mlm=False):
 
     # read in an image, generate it's saliency map and generate bounding
     # boxes in format: [left_x, left_y, box_width, box_height]
@@ -53,12 +55,16 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.9, threashold=2000000,
     # samples = number of random samples to take
     # nms_threahsold = acceptable overlap threashold for nms
     # n = maximum number of bounding boxes
+    # log = toggle log output to console for time elapsed
+    # lpf = toggle low pass filer for saliency mapper
+    # channels_3 = toggle processing on 3 channels
+    # mlm = toggle saliency map generation on every pyramid layer
 
     start = time.time()
 
     # initialize saliency_mapper
-    saliency_mapper = SaliencyDoG(low_pass_filter=True, ch_3=True,
-                                  multi_layer_map=True)
+    saliency_mapper = SaliencyDoG(low_pass_filter=lpf, ch_3=channels_3,
+                                  multi_layer_map=mlm)
 
     # generate saliency map
     saliency_map = saliency_mapper.generate_saliency(img)
@@ -112,19 +118,20 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.9, threashold=2000000,
     # perform Non Maximum Suppression
     indices = cv2.dnn.NMSBoxes(bounding_boxes, box_confidences, threashold,
                                nms_threashold)
-    
+
     # select n best boxes
     n_best_boxes = []
 
     for idx in indices:
 
+        # upnack index and sort list
         n_best_boxes.append(idx[0])
-        n_best_boxes = sorted(n_best_boxes)
+        n_best_boxes = sorted(n_best_boxes, reverse=True)
 
         if len(n_best_boxes) > int(n):
-            n_best_boxes = n_best_boxes[:int(n)-1]
+            n_best_boxes = n_best_boxes[:int(n)]
 
-
+    # output n best nms bounding boxes
     nms_bounding_boxes = []
 
     for idx in n_best_boxes:
@@ -137,7 +144,8 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.9, threashold=2000000,
 
         nms_bounding_boxes.append([xa, ya, box_width, box_height])
 
-    print(time.time()-start)
+    if log:
+        print("Bounding Boxes generated in {}".format(time.time()-start))
 
     return nms_bounding_boxes
 
@@ -158,6 +166,12 @@ if __name__ == "__main__":
         type=str,
         nargs='?',
         help='specify image file')
+    parser.add_argument(
+        'output_file',
+        metavar='output_file',
+        type=str,
+        nargs='?',
+        help='specify output image file')
     args = parser.parse_args()
 
     # read in image
@@ -166,9 +180,9 @@ if __name__ == "__main__":
     # generate bounding boxes
     bboxes = ransac_bounding_boxes(img)
 
+    # draw bounding boxes
     output = draw_bounding_boxes(bboxes, img)
 
-    cv2.imwrite("BoundingBoxes.png", output)
-    cv2.waitKey(0)
+    cv2.imwrite(args.output_file, output)
 
 ##########################################################################
