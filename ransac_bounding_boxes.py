@@ -74,6 +74,9 @@ def ransac_bounding_boxes(img, min_box=0.25, max_box=0.4,
 
     bounding_boxes = []
     box_confidences = []
+    
+    # load image back into CPU
+    integral_image = cv2.UMat.get(integral_image)
 
     # -1 as indexing starts at 0
     frame_width = integral_image.shape[1] - 1
