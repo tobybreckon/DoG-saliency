@@ -38,48 +38,52 @@ def calculateIOU(x):
     coco = COCO(ANNOTATIONS_FILE_PATH)
 
     # get category id for 'person'
-    catIds = coco.getCatIds(catNms=['person'])
+#    catIds = coco.getCatIds(catNms=['person'])
 
     # get annotation id for these cats, and no crowd
-    annIds = coco.getAnnIds(catIds=catIds, iscrowd=None)
+#    annIds = coco.getAnnIds(catIds=catIds, iscrowd=None)
 
     # load these annotations
-    anns = coco.loadAnns(annIds)
+#    anns = coco.loadAnns(annIds)
 
-    for annotation in anns:
+#    for annotation in anns:
         
         # load associated image
-        img_id = annotation["image_id"]
-        img_file_name = coco.loadImgs(img_id)[0]['file_name']
-        img = cv2.imread(IMAGES_FILE_PATH + img_file_name)
+        #img_id = annotation["image_id"]
+        #img_file_name = coco.loadImgs(img_id)[0]['file_name']
+    ann_id = coco.getAnnIds(imgIds="000000425226.jpg")
+    annotation = coco.loadAnns(ann_id)
+
+    img_file_name = "000000425226.jpg"
+    img = cv2.imread(IMAGES_FILE_PATH + img_file_name)
 
         # perform bounding box by saliency
-        predicted = ransac_bounding_boxes(img, min_box, max_box, threashold, samples, nms_threashold, n)
+    predicted = ransac_bounding_boxes(img, min_box, max_box, threashold, samples, nms_threashold, n)
 
-        # no bounding box = 0 iou
-        if len(predicted) == 0:
-            return 0.0
+    # no bounding box = 0 iou
+    if len(predicted) == 0:
+        return 0.0
 
-        # just take best bounding box for now
-        predicted = predicted[-1]
+    # just take best bounding box for now
+    predicted = predicted[-1]
 
-        # bounding boxes given as top left coords, width, height
-        ground_truth = annotation['bbox']
-        ground_truth = [int(x) for x in ground_truth]
+    # bounding boxes given as top left coords, width, height
+    ground_truth = annotation['bbox']
+    ground_truth = [int(x) for x in ground_truth]
 
-        # bounding boxes as pair of coordinates
-        ground_truth_coords = [ground_truth[0], ground_truth[1], ground_truth[0] + ground_truth[2], ground_truth[1] + ground_truth[3]]
-        predicted_coords = [predicted[0], predicted[1], predicted[0] + predicted[2], predicted[1] + predicted[3]]
+    # bounding boxes as pair of coordinates
+    ground_truth_coords = [ground_truth[0], ground_truth[1], ground_truth[0] + ground_truth[2], ground_truth[1] + ground_truth[3]]
+    predicted_coords = [predicted[0], predicted[1], predicted[0] + predicted[2], predicted[1] + predicted[3]]
 
-        iou = bb_intersection_over_union(ground_truth_coords, predicted_coords)
+    iou = bb_intersection_over_union(ground_truth_coords, predicted_coords)
 
 #        print(ground_truth)
 #        print(predicted)
 
-        print(iou)
+    print(iou)
 
         # just do one image for now
-        break
+#        break
 
     return iou
 
@@ -126,7 +130,7 @@ n_guess=1
 
 x0 = np.array([min_box_guess, max_box_guess, threashold_guess, samples_guess, nms_threashold_guess, n_guess])
 
-sol = minimize(objective,x0,method="Nelder-Mead",bounds=bnds,constraints=cons,options={"disp": True})
+sol = minimize(objective,x0,tol=1.5,method="Nelder-Mead",bounds=bnds,constraints=cons,options={"disp": True})
 
 xOpt = sol.x
 IOUOpt = -sol.fun
