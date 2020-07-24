@@ -1,3 +1,5 @@
 opencv-contrib-python >= 4.3
 numpy
 pytest
+pycocotools >= 2.0.1
+scipy >= 1.5
