@@ -132,9 +132,8 @@ if __name__ == "__main__":
                     frame = cv2.resize(
                         frame, (0, 0), fx=args.rescale, fy=args.rescale)
 
-            # ***
-            # *** do any processing here ****
-            # ***
+            # perform saliency processing via Division of Gaussians
+            # [Katramados / Breckon 2011]
 
             if toggle_saliency:
                 frame = saliency_mapper.generate_saliency(frame)
