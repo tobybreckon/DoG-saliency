@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     # define display window name
 
-    window_name = "Live Camera Input"  # window name
+    window_name = "Live Input"  # window name
 
     # if command line arguments are provided try to read video_name
     # otherwise default to capture from attached camera
