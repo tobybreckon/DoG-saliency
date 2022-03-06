@@ -177,7 +177,7 @@ class SaliencyDoG:
         if self.ch_3:
 
             # Split colour image into RBG channels
-            channel_array = cv2.split(src)
+            channel_array = list(cv2.split(src))
 
             # Generate Saliency Map for each channel
             for channel in range(3):
