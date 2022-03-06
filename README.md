@@ -3,7 +3,7 @@
 ![Python - PEP8](https://github.com/tobybreckon/DoG-saliency/workflows/Python%20-%20PEP8/badge.svg)
 ![Saliency Test](https://github.com/tobybreckon/DoG-saliency/workflows/Saliency%20Test/badge.svg)
 
-Tested using Python 3.8.2 and [OpenCV 4.3.0](http://www.opencv.org)
+Tested using Python 3.8.2 and [OpenCV 4.5.4](http://www.opencv.org)
 
 ![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/master/test/true_saliency_maps/fig_2_saliency.png)|![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/master/test/samples/fig_2.png)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -69,7 +69,7 @@ $ cd DoG-saliency
 $ python3.x -m pip install -r requirements.txt
 $ pytest test.py
 ```
-Ensure that all tests are passed before proceeding. If any tests fail, ensure you have installed the modules from `requirements.txt` and are using at least python 3.7.5 and OpenCv 4.2.0. 
+Ensure that all tests are passed before proceeding. If any tests fail, ensure you have installed the modules from `requirements.txt` and are using at least python 3.7.5 and OpenCv 4.2.0.
 
 Subsequently run the following command to obtain real-time saliency output from a connected camera or video file specified on the command line:
 
