@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
     keep_processing = True
     toggle_saliency = True
+    toggle_time_info = True
 
     # parse command line arguments for camera ID or video file
 
@@ -138,28 +139,35 @@ if __name__ == "__main__":
             if toggle_saliency:
                 frame = saliency_mapper.generate_saliency(frame)
 
-            # display image
-
-            cv2.imshow(window_name, frame)
-            cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN,
-                                  cv2.WINDOW_FULLSCREEN & args.fullscreen)
-
             # stop the timer and convert to ms. (to see how long processing and
             # display takes)
 
             stop_t = ((cv2.getTickCount() - start_t) /
                       cv2.getTickFrequency()) * 1000
 
+            if toggle_time_info:
+                label = ('Processing time: %.0f ms' % stop_t) + \
+                        (' (Framerate: %.0f fps' % (1000 / stop_t)) + ')'
+                cv2.putText(frame, label, (0, 15),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255))
+
+            # display image
+
+            cv2.imshow(window_name, frame)
+            cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN,
+                                  cv2.WINDOW_FULLSCREEN & args.fullscreen)
+
             # start the event loop + wait 40ms or less depending on
             # processing time taken (i.e. 1000ms / 25 fps = 40 ms)
 
             key = cv2.waitKey(max(2, 40 - int(math.ceil(stop_t)))) & 0xFF
 
-            # It can also be set to detect specific key strokes by recording
-            # which key is pressed
+            # detect specific key strokes by recording which key is pressed
 
-            # e.g. if user presses "x" then exit  / press "f" for fullscreen
-            # display
+            # - "x" - exit
+            # - "f" - fullscreen
+            # - "s" - toggle saliency display on/off
+            # - "t" - toggle fps/time info display
 
             if (key == ord('x')):
                 keep_processing = False
@@ -167,6 +175,9 @@ if __name__ == "__main__":
                 args.fullscreen = not(args.fullscreen)
             elif (key == ord('s')):
                 toggle_saliency = not(toggle_saliency)
+                toggle_time_info = not(toggle_time_info)
+            elif (key == ord('t')):
+                toggle_time_info = not(toggle_time_info)
 
         # close all windows
 
