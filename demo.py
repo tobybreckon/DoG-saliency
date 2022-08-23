@@ -78,7 +78,7 @@ if __name__ == "__main__":
     try:
         # to use a non-buffered camera stream (via a separate thread)
 
-        if not(args.video_file):
+        if not (args.video_file):
             import camera_stream
             cap = camera_stream.CameraVideoStream()
         else:
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         cap = cv2.VideoCapture()
 
     # initialize saliency_mapper
-    saliency_mapper = SaliencyDoG(ch_3=not(args.grayscale),
+    saliency_mapper = SaliencyDoG(ch_3=not (args.grayscale),
                                   low_pass_filter=args.low_pass_filter,
                                   multi_layer_map=args.multi_layer_map)
 
@@ -172,12 +172,12 @@ if __name__ == "__main__":
             if (key == ord('x')):
                 keep_processing = False
             elif (key == ord('f')):
-                args.fullscreen = not(args.fullscreen)
+                args.fullscreen = not (args.fullscreen)
             elif (key == ord('s')):
-                toggle_saliency = not(toggle_saliency)
-                toggle_time_info = not(toggle_time_info)
+                toggle_saliency = not (toggle_saliency)
+                toggle_time_info = not (toggle_time_info)
             elif (key == ord('t')):
-                toggle_time_info = not(toggle_time_info)
+                toggle_time_info = not (toggle_time_info)
 
         # close all windows
 
