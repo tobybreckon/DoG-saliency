@@ -170,7 +170,7 @@ class CameraVideoStream:
         # when the backend is v4l (linux) set the buffer size to 1
         # (as this is implemented for this backend and not others)
         if (backend == cv2.CAP_V4L):
-            self.camera.set(cv2.CAP_PROP_BUFFERSIZE, 10)
+            self.camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
         # read the first frame from the stream (and its timestamp)
         (self.grabbed, self.frame) = self.camera.read()
