@@ -29,6 +29,17 @@
 # available (i.e. camera_stream.py is in the module search path) and
 # falls back to using cv2.VideoCapture otherwise
 
+# use with other OpenCV video backends just explicitly pass the required
+# OpenCV flag as follows:
+#    ....
+#    import camera_stream
+#    cap = camera_stream.CameraVideoStream()
+#    ....
+#
+#    cap.open("your | gstreamer | pipeline", cv2.CAP_GSTREAMER)
+#
+# Ref: https://docs.opencv.org/4.x/d4/d15/group__videoio__flags__base.html
+
 # OpenCV T-API usage - alternative usage to enable OpenCV Transparent API
 # h/w acceleration where available on all subsequent processing of image
 # ....
