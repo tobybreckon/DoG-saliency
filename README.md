@@ -89,7 +89,7 @@ optional arguments:
 -   `-l`&nbsp;&nbsp; optionally apply a low_pass_filter to saliency map
 -   `-m`&nbsp;&nbsp; optionally use every pyramid layer in the production of the saliency map
 
-During run-time, keyboard commands `x` will quit the program, `f` will toggle fullscreen, and `s` will toggle between saliency mapping and the original input image frames.
+During run-time, keyboard commands `x` will quit the program, `f` will toggle fullscreen, `s` will toggle between saliency mapping and the original input image frames and `t` will toggle the speed/fps info display.
 
 ---
 
