@@ -157,11 +157,11 @@ if __name__ == "__main__":
 
             if toggle_time_info:
                 label = ('Processing time: %.0f ms' % stop_t) + \
-                        (' (Framerate (processing): %.0f fps' %
-                         (1000 / stop_t)) + ')'
+                        (' [ Max. framerate (processing): %.0f fps' %
+                         (1000 / stop_t)) + ' ]'
                 cv2.putText(frame, label, (0, 15),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255))
-                label = ('Framerate (camera): %.0f fps' % cap_fps)
+                label = ('Supplied framerate (camera): %.0f fps' % cap_fps)
                 cv2.putText(frame, label, (0, 30),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255))
             # display image
