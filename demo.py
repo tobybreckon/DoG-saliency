@@ -122,8 +122,11 @@ if __name__ == "__main__":
             if (cap.isOpened):
                 ret, frame = cap.read()
                 timestamp_latest = cap.get(cv2.CAP_PROP_POS_MSEC)
+
+                # check the timestamp of the frame (and skip if not new)
+
                 if (timestamp_latest == frame_timestamp):
-                    continue
+                    continue  # skip identical frames
                 else:
                     cap_fps = 1000 / (timestamp_latest - frame_timestamp)
                     frame_timestamp = timestamp_latest
