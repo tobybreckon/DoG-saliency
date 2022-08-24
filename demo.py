@@ -113,10 +113,6 @@ if __name__ == "__main__":
 
         while (keep_processing):
 
-            # start a timer (to see how long processing and display takes)
-
-            start_t = cv2.getTickCount()
-
             # if camera /video file successfully open then read frame
 
             if (cap.isOpened):
@@ -142,6 +138,10 @@ if __name__ == "__main__":
                 if (args.rescale != 1.0):
                     frame = cv2.resize(
                         frame, (0, 0), fx=args.rescale, fy=args.rescale)
+
+            # start a timer (to see how long processing only takes)
+
+            start_t = cv2.getTickCount()
 
             # perform saliency processing via Division of Gaussians
             # [Katramados / Breckon 2011]
