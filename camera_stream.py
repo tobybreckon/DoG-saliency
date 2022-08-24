@@ -71,7 +71,7 @@ if ((majorCV <= '3') and (minorCV <= '4')):
 
 # set up logging
 
-log_level = logging.DEBUG  # change to INFO for useful information
+log_level = logging.CRITICAL  # change to INFO for useful information
 
 log_msg_format = '%(asctime)s - Thead ID: %(thread)d - %(message)s'
 logging.basicConfig(format=log_msg_format, level=log_level)
