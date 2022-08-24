@@ -24,6 +24,7 @@ if __name__ == "__main__":
     keep_processing = True
     toggle_saliency = True
     toggle_time_info = True
+    frame_timestamp = 0
 
     # parse command line arguments for camera ID or video file
 
@@ -120,6 +121,12 @@ if __name__ == "__main__":
 
             if (cap.isOpened):
                 ret, frame = cap.read()
+                timestamp_latest = cap.get(cv2.CAP_PROP_POS_MSEC)
+                if (timestamp_latest == frame_timestamp):
+                    continue
+                else:
+                    cap_fps = 1000 / (timestamp_latest - frame_timestamp)
+                    frame_timestamp = timestamp_latest
 
                 # when we reach the end of the video (file) exit cleanly
 
@@ -147,10 +154,13 @@ if __name__ == "__main__":
 
             if toggle_time_info:
                 label = ('Processing time: %.0f ms' % stop_t) + \
-                        (' (Framerate: %.0f fps' % (1000 / stop_t)) + ')'
+                        (' (Framerate (processing): %.0f fps' %
+                         (1000 / stop_t)) + ')'
                 cv2.putText(frame, label, (0, 15),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255))
-
+                label = ('Framerate (camera): %.0f fps' % cap_fps)
+                cv2.putText(frame, label, (0, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255))
             # display image
 
             cv2.imshow(window_name, frame)
