@@ -55,6 +55,7 @@ from threading import Thread
 import cv2
 import sys
 import atexit
+import logging
 
 ##########################################################################
 
@@ -65,6 +66,15 @@ import atexit
 if ((majorCV <= '3') and (minorCV <= '4')):
     raise NameError('OpenCV version < 3.4,'
                     + ' not compatible with CameraVideoStream()')
+
+##########################################################################
+
+# set up logging
+
+log_level = logging.CRITICAL  # change to INFO for useful debug
+
+log_msg_format = '%(asctime)s - Thead ID: %(thread)d - %(message)s'
+logging.basicConfig(format=log_msg_format, level=log_level)
 
 ##########################################################################
 
@@ -166,6 +176,8 @@ class CameraVideoStream:
         (self.grabbed, self.frame) = self.camera.read()
         self.timestamp = self.camera.get(cv2.CAP_PROP_POS_MSEC)
         self.framecounter += 1
+        logging.info("GRAB - frame %d @ time %d",
+                     self.framecounter, self.timestamp)
 
         # only start the thread if in-fact the camera read was successful
         if (self.grabbed):
@@ -204,6 +216,8 @@ class CameraVideoStream:
                     (self.grabbed, self.frame) = self.camera.retrieve()
                     self.timestamp = latest_timestamp
                     self.framecounter += 1
+                    logging.info("GRAB - frame %d @ time %d",
+                                 self.framecounter, self.timestamp)
 
     def grab(self):
         # return status of most recent grab by the thread
@@ -220,6 +234,13 @@ class CameraVideoStream:
         # that is consistent with the last image the caller got via read()
         self.timestamp_last_read = self.timestamp
         self.framecounter_last_read = self.framecounter
+        frame_offset = (self.framecounter - self.framecounter_last_read)
+
+        for skip in range(1, frame_offset):
+            logging.info("SKIP - frame %d", self.framecounter_last_read + skip)
+
+        logging.info("READ - frame %d @ time %d",
+                     self.framecounter, self.timestamp)
 
         # return the frame most recently read
         if (self.tapi):
@@ -255,6 +276,8 @@ class CameraVideoStream:
         (self.grabbed, self.frame) = self.camera.read()
         self.timestamp = self.camera.get(cv2.CAP_PROP_POS_MSEC)
         self.framecounter += 1
+        logging.info("GRAB - frame %d @ time %d",
+                     self.framecounter, self.timestamp)
 
         # restart thread by unsuspending it
         self.suspend = False
