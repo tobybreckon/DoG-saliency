@@ -24,6 +24,7 @@ if __name__ == "__main__":
     keep_processing = True
     toggle_saliency = True
     toggle_time_info = True
+    frame_timestamp = 0
 
     # parse command line arguments for camera ID or video file
 
@@ -112,14 +113,19 @@ if __name__ == "__main__":
 
         while (keep_processing):
 
-            # start a timer (to see how long processing and display takes)
-
-            start_t = cv2.getTickCount()
-
             # if camera /video file successfully open then read frame
 
             if (cap.isOpened):
                 ret, frame = cap.read()
+                timestamp_latest = cap.get(cv2.CAP_PROP_POS_MSEC)
+
+                # check the timestamp of the frame (and skip if not new)
+
+                if (timestamp_latest == frame_timestamp):
+                    continue  # skip identical frames
+                else:
+                    cap_fps = 1000 / (timestamp_latest - frame_timestamp)
+                    frame_timestamp = timestamp_latest
 
                 # when we reach the end of the video (file) exit cleanly
 
@@ -132,6 +138,10 @@ if __name__ == "__main__":
                 if (args.rescale != 1.0):
                     frame = cv2.resize(
                         frame, (0, 0), fx=args.rescale, fy=args.rescale)
+
+            # start a timer (to see how long processing only takes)
+
+            start_t = cv2.getTickCount()
 
             # perform saliency processing via Division of Gaussians
             # [Katramados / Breckon 2011]
@@ -147,10 +157,13 @@ if __name__ == "__main__":
 
             if toggle_time_info:
                 label = ('Processing time: %.0f ms' % stop_t) + \
-                        (' (Framerate: %.0f fps' % (1000 / stop_t)) + ')'
+                        (' [ Max. framerate (processing): %.0f fps' %
+                         (1000 / stop_t)) + ' ]'
                 cv2.putText(frame, label, (0, 15),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255))
-
+                label = ('Supplied framerate (camera): %.0f fps' % cap_fps)
+                cv2.putText(frame, label, (0, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255))
             # display image
 
             cv2.imshow(window_name, frame)
