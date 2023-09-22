@@ -3,7 +3,7 @@
 ![Python - PEP8](https://github.com/tobybreckon/DoG-saliency/workflows/Python%20-%20PEP8/badge.svg)
 ![Saliency Test](https://github.com/tobybreckon/DoG-saliency/workflows/Saliency%20Test/badge.svg)
 
-Tested using Python 3.8.2 and [OpenCV 4.5.4](http://www.opencv.org)
+Tested using Python 3.8.2 and [OpenCV 4.8.0](http://www.opencv.org)
 
 ![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/master/test/true_saliency_maps/fig_2_saliency.png)|![DOG-Saliency](https://github.com/tobybreckon/DoG-saliency/blob/master/test/samples/fig_2.png)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
