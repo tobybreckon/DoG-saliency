@@ -129,6 +129,7 @@ class CameraVideoStream:
         # set the initial timestamps to zero
         self.timestamp = 0
         self.timestamp_last_read = 0
+        self.use_timestamps = False
 
         # set internal framecounters to -1
         self.framecounter = -1
@@ -141,18 +142,24 @@ class CameraVideoStream:
         # set some sensible backends for real-time video capture from
         # directly connected hardware on a per-OS basis,
         # that can we overidden via the open() method
+        # + remember timestamps only seem to work on linux
         if sys.platform.startswith('linux'):        # all Linux
             self.backend_default = cv2.CAP_V4L
+            self.use_timestamps = True
         elif sys.platform.startswith('win'):        # MS Windows
             self.backend_default = cv2.CAP_DSHOW
+            self.use_timestamps = False
         elif sys.platform.startswith('darwin'):     # macOS
             self.backend_default = cv2.CAP_AVFOUNDATION
+            self.use_timestamps = False
         else:
             self.backend_default = cv2.CAP_ANY      # auto-detect via OpenCV
 
         # if a source was specified at init, proceed to open device
         if not (src is None):
             self.open(src, backend)
+            if not (backend == cv2.CAP_V4L):
+                self.use_timestamps = False
 
     def open(self, src=0, backend=None):
 
@@ -212,7 +219,8 @@ class CameraVideoStream:
             if not (self.suspend):
                 self.camera.grab()
                 latest_timestamp = self.camera.get(cv2.CAP_PROP_POS_MSEC)
-                if (latest_timestamp > self.timestamp):
+                if ((latest_timestamp > self.timestamp)
+                        or (self.use_timestamps is False)):
                     (self.grabbed, self.frame) = self.camera.retrieve()
                     self.framecounter += 1
                     logging.info("GRAB - frame %d @ time %f",

@@ -122,9 +122,9 @@ If you are making use of this work in any way please reference the following art
 }
 ```
 
-For non-commercial use (i.e. academic, non-for-profit and research) the (very permissive) terms of the MIT free software [LICENSE](LICENSE) must be adhered to.
+Free for commercial use and non-commercial use (i.e. academic, non-for-profit and research) under the (very permissive) terms of the MIT free software [LICENSE](LICENSE) that must be adhered to.
 
-For commercial use, the Division of Gaussians (DIVoG / DoG) saliency detection algorithm is patented (WIPO reference: [WO2013034878A3](https://patents.google.com/patent/WO2013034878A3/)) and available for licensing via [Cranfield University](https://www.cranfield.ac.uk/).
+The Division of Gaussians (DIVoG / DoG) saliency detection algorithm was filed as a patent (WIPO reference: [WO2013034878A2](https://patents.google.com/patent/WO2013034878A2/) by [Cranfield University](https://www.cranfield.ac.uk/), 2013/14) but this patent application has now lasped.
 
 ### Acknowledgements:
 
