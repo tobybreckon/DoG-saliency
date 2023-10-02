@@ -111,7 +111,7 @@ atexit.register(closeDownAllThreadsCleanly)
 
 
 class CameraVideoStream:
-    def __init__(self, src=None, backend=None,
+    def __init__(self, src=None, apiPreference=None,
                  name="CameraVideoStream", use_tapi=False):
 
         # initialize the thread name
@@ -157,26 +157,26 @@ class CameraVideoStream:
 
         # if a source was specified at init, proceed to open device
         if not (src is None):
-            self.open(src, backend)
-            if not (backend == cv2.CAP_V4L):
+            self.open(src, apiPreference)
+            if not (apiPreference == cv2.CAP_V4L):
                 self.use_timestamps = False
 
-    def open(self, src=0, backend=None):
+    def open(self, src=0, apiPreference=None):
 
         # determine backend to specified by user
-        if (backend is None):
-            backend = self.backend_default
+        if (apiPreference is None):
+            apiPreference = self.backend_default
 
         # check if aleady opened via init method
         if (self.grabbed > 0):
             return True
 
         # initialize the video camera stream
-        self.camera = cv2.VideoCapture(src, backend)
+        self.camera = cv2.VideoCapture(src, apiPreference)
 
         # when the backend is v4l (linux) set the buffer size to 1
         # (as this is implemented for this backend and not others)
-        if (backend == cv2.CAP_V4L):
+        if (apiPreference == cv2.CAP_V4L):
             self.camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
         # read the first frame from the stream (and its timestamp)
